@@ -111,9 +111,34 @@ namespace GameLogic
             }
             return null;
         }
+
+        public Skill GetSkillByID(int skillID)
+        {
+            for (int i = 0; i < SkillArr.Length; i++)
+            {
+                if (SkillArr[i].SkillId == skillID)
+                {
+                    return SkillArr[i];
+                }
+            }
+            Log.Error($"skillID{skillID} not found");
+            return null;
+        }
         private void UnInitSkill()
         {
             
+        }
+
+        public bool IsSkillSpelling()
+        {
+            for (int i = 0; i < SkillArr.Length; i++)
+            {
+                if (SkillArr[i].SkillState == SkillState.SpellStart)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

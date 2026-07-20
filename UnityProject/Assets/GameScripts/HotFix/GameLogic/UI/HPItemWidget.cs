@@ -6,19 +6,10 @@ using TMPro;
 
 namespace GameLogic
 {
-    // 照搬原版 ItemHP.cs 末尾
-    public enum StateEnum
-    {
-        None,
-        Silenced,
-        Knockup,
-        Stunned,
-        Invincible,
-        Restricted,
-    }
+   
+
 
     /// <summary>
-    /// 单位血条。原版 ItemHP(abstract)/ItemHPSoldier/ItemHPHero/ItemHPTower 的继承层
     /// 扁平化合并到本 UIWidget：基类公共 + 三子类 override 内容，按 unitType 分支。
     /// </summary>
     public class HPItemWidget : UIWidget

@@ -30,6 +30,9 @@ namespace GameLogic
             Reg(BuffType.HPCure,
                 (src,owner,skill,id,args)
                 =>new HPCureBuff_Single(src, owner, skill, id, args));
+            Reg(BuffType.ModifySkill,
+                (src,owner,skill,id,args)
+                    =>new CommonModifySkillBuff(src, owner, skill, id, args));
             // 其余 BuffType(HPCure/ArthurMark/Stun/...)的子类逻辑尚未迁移,
             // 每补一个 XxxBuff.cs 后,在此追加一行 Reg(...)。
         }

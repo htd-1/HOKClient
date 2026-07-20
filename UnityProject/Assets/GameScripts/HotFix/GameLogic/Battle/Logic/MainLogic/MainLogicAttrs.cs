@@ -52,6 +52,70 @@ namespace GameLogic
                 }
             }
         }
+
+        public int SilenceCount
+        {
+            get => _silenceCount;
+            set
+            {
+                _silenceCount = value;
+                if (IsSilenced())
+                {
+                    OnStateChange?.Invoke(StateEnum.Silenced,true);
+                }
+                else
+                {
+                    OnStateChange?.Invoke(StateEnum.Silenced,false);
+                }
+            }
+        }
+        private int _silenceCount;
+        private bool IsSilenced() => _silenceCount != 0;
+        
+        private int _stunnedCount;
+
+        public int StunnedCount
+        {
+            get => _stunnedCount;
+            set
+            {
+                _stunnedCount = value;
+                if (IsStunned())
+                {
+                    InputFakeMoveKey(PEVector3.zero);
+                    OnStateChange?.Invoke(StateEnum.Stunned,true);
+                }
+                else
+                {
+                    OnStateChange?.Invoke(StateEnum.Stunned,false);
+                }
+            }
+        }
+        private bool IsStunned() => _stunnedCount != 0;
+        
+        private int _knockupCount;
+
+        public int KnockupCount
+        {
+            get => _knockupCount;
+            set
+            {
+                _knockupCount = value;
+                if (IsKnocked())
+                {
+                    InputFakeMoveKey(PEVector3.zero);
+                    OnStateChange?.Invoke(StateEnum.Knockup,true);
+
+                    LogicPos += new PEVector3(0, (PEInt)(0.5), 0);
+                }
+                else
+                {
+                    OnStateChange?.Invoke(StateEnum.Knockup,false);
+                    LogicPos += new PEVector3(0, (PEInt)(-0.5), 0);
+                }
+            }
+        }
+        private bool IsKnocked() =>_knockupCount != 0;
         #endregion
         
         private void InitProperties()
@@ -168,6 +232,18 @@ namespace GameLogic
        
         public Action<JumpUpdateInfo> OnSlowDown;
 
+        
+        public Action<StateEnum,bool>OnStateChange;
+        
         #endregion
+    }
+    public enum StateEnum
+    {
+        None,
+        Silenced,
+        Knockup,
+        Stunned,
+        Invincible,
+        Restricted,
     }
 }

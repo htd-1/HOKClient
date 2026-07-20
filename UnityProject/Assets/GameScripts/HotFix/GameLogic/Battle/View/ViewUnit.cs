@@ -111,7 +111,7 @@ namespace GameLogic
                 }
                 else
                 {
-                transform.position = ViewTargetPos;
+                    transform.position = ViewTargetPos;
                     
                 }
 

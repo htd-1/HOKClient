@@ -261,5 +261,42 @@ namespace GameLogic
                 }
             }
         }
+
+        private int tempSkillID;
+
+        public int TempSkillID
+        {
+            get => tempSkillID;
+            set 
+            {
+               tempSkillID = value;
+               Log.Info($"set tempSkillID:{tempSkillID}");
+            }
+        }
+
+        /// <summary>
+        /// 技能替换
+        /// </summary>
+        /// <param name="replaceID"></param>
+        public void ReplaceSkillCfg(int replaceID)
+        {
+            //查看是否调整成功
+            if (SkillId == replaceID)
+            {
+                TempSkillID = 0;
+            }
+            else
+            {
+                TempSkillID= replaceID;
+            }
+            
+            Cfg=GameServices.Config.GetSkill(replaceID);
+            SpellTime = Cfg.SpellTime;
+            SkillTime = Cfg.SkillTime;
+            if (Cfg.IsNormalAttack)
+            {
+                Owner.InitAttackSpeedRate(1000/SkillTime);
+            }
+        }
     }
 }

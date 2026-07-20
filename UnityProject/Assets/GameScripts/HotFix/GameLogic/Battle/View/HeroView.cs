@@ -1,4 +1,5 @@
-﻿using GameConfig.hok;
+﻿using dnlib.DotNet.Writer;
+using GameConfig.hok;
 using UnityEngine;
 
 namespace GameLogic
@@ -27,6 +28,7 @@ namespace GameLogic
 
         protected override Vector3 GetUnitViewDir()
         {
+            if (_hero.IsSkillSpelling()) return ViewTargetDir;
             //玩家朝向
             return _hero.InputDir.ConvertViewVector3();
         }

@@ -1,4 +1,5 @@
 
+using System.Text;
 using HOKProtocol;
 using PEMath;
 using UnityEngine;
@@ -48,6 +49,10 @@ namespace GameLogic
                 return false;
             }
 
+            if (!CanMove())
+            {
+                return false;
+            }
             var msg = new HOKMsg {
                 cmd = CMD.SndOpKey,
                 sndOpKey = new SndOpKey {
@@ -89,6 +94,11 @@ namespace GameLogic
             NetSvc.Instance.Send(msg);
         }
 
+        private bool CanMove()
+        {
+            return _fightMgr.CanMove(_selfIndex);
+        }
 
+        
     }
 }

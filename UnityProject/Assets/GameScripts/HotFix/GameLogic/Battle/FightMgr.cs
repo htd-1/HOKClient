@@ -212,6 +212,10 @@ namespace GameLogic
             return _logicEnv.GetEnvColliders();
         }
        
+        public bool CanMove(int posIndex)
+        {
+            return _heroList[posIndex].CanMove();
+        }
 
     }  
     

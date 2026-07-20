@@ -91,5 +91,12 @@ namespace GameLogic
         {
             _envColliderList = list;
         }
+
+        public bool CanMove()
+        {
+            return !IsStunned()&&
+                   !IsKnocked()&&
+                   !IsSkillSpelling();
+        }
     }
 }

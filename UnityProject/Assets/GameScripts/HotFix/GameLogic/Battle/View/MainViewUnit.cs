@@ -48,7 +48,7 @@ namespace GameLogic
 
         protected override void Update()
         {
-            if (_mainLogicUnit.IsDirChanged)
+            if (_mainLogicUnit.IsDirChanged&&!_mainLogicUnit.IsSkillSpelling())
             {
                 if (_mainLogicUnit.LogicDir.ConvertViewVector3()
                     .Equals(Vector3.zero))
