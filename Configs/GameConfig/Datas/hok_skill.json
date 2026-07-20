@@ -1,0 +1,682 @@
+[
+  {
+    "id": 1010,
+    "skillID": 1010,
+    "iconName": "",
+    "aniName": "atk",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier",
+        "Tower"
+      ],
+      "selectRange": 2,
+      "searchDis": 10
+    },
+    "bulletCfg": null,
+    "cdTime": 0,
+    "spellTime": 800,
+    "isNormalAttack": true,
+    "skillTime": 1400,
+    "damage": 45,
+    "buffIDArr": [],
+    "audioStart": "arthur_ska_rls",
+    "audioWork": "",
+    "audioHit": "arthur_ska_hit"
+  },
+  {
+    "id": 1011,
+    "skillID": 1011,
+    "iconName": "arthur_sk1",
+    "aniName": "",
+    "releaseMode": "Click",
+    "targetCfg": null,
+    "bulletCfg": null,
+    "cdTime": 5000,
+    "spellTime": 0,
+    "isNormalAttack": false,
+    "skillTime": 0,
+    "damage": 0,
+    "buffIDArr": [
+      10110,
+      10111
+    ],
+    "audioStart": "arthur_sk1_rls",
+    "audioWork": "",
+    "audioHit": ""
+  },
+  {
+    "id": 1012,
+    "skillID": 1012,
+    "iconName": "arthur_sk2",
+    "aniName": "",
+    "releaseMode": "Click",
+    "targetCfg": null,
+    "bulletCfg": null,
+    "cdTime": 5000,
+    "spellTime": 0,
+    "isNormalAttack": false,
+    "skillTime": 0,
+    "damage": 0,
+    "buffIDArr": [
+      10120
+    ],
+    "audioStart": "arthur_sk2_rls",
+    "audioWork": "",
+    "audioHit": ""
+  },
+  {
+    "id": 1013,
+    "skillID": 1013,
+    "iconName": "arthur_sk3",
+    "aniName": "sk3",
+    "releaseMode": "Click",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero"
+      ],
+      "selectRange": 4,
+      "searchDis": 10
+    },
+    "bulletCfg": null,
+    "cdTime": 10000,
+    "spellTime": 250,
+    "isNormalAttack": false,
+    "skillTime": 1300,
+    "damage": 0,
+    "buffIDArr": [
+      10130,
+      10131,
+      10132,
+      10133
+    ],
+    "audioStart": "arthur_sk3_rls",
+    "audioWork": "",
+    "audioHit": ""
+  },
+  {
+    "id": 1014,
+    "skillID": 1010,
+    "iconName": "",
+    "aniName": "sk1_atk",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier",
+        "Tower"
+      ],
+      "selectRange": 2,
+      "searchDis": 10
+    },
+    "bulletCfg": null,
+    "cdTime": 0,
+    "spellTime": 800,
+    "isNormalAttack": true,
+    "skillTime": 1400,
+    "damage": 90,
+    "buffIDArr": [
+      10140,
+      10141,
+      10142
+    ],
+    "audioStart": "",
+    "audioWork": "",
+    "audioHit": "arthur_sk1_hit"
+  },
+  {
+    "id": 1020,
+    "skillID": 1020,
+    "iconName": "",
+    "aniName": "atk",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Tower",
+        "Soldier"
+      ],
+      "selectRange": 5,
+      "searchDis": 15
+    },
+    "bulletCfg": {
+      "bulletType": "SkillTarget",
+      "bulletName": "后羿普攻子弹",
+      "resPath": "houyi_ska_bullet",
+      "bulletSpeed": 1,
+      "bulletSize": 0.1,
+      "bulletHeight": 1.5,
+      "bulletOffset": 0.5,
+      "bulletDelay": 0,
+      "canBlock": false,
+      "impacter": null,
+      "bulletDuration": 0
+    },
+    "cdTime": 0,
+    "spellTime": 550,
+    "isNormalAttack": true,
+    "skillTime": 1400,
+    "damage": 50,
+    "buffIDArr": [],
+    "audioStart": "",
+    "audioWork": "houyi_ska_rls",
+    "audioHit": "com_hit2"
+  },
+  {
+    "id": 1021,
+    "skillID": 1021,
+    "iconName": "houyi_sk1",
+    "aniName": "",
+    "releaseMode": "Click",
+    "targetCfg": null,
+    "bulletCfg": null,
+    "cdTime": 5000,
+    "spellTime": 0,
+    "isNormalAttack": false,
+    "skillTime": 0,
+    "damage": 0,
+    "buffIDArr": [
+      10210
+    ],
+    "audioStart": "houyi_sk1_rls",
+    "audioWork": "",
+    "audioHit": ""
+  },
+  {
+    "id": 1022,
+    "skillID": 1022,
+    "iconName": "houyi_sk2",
+    "aniName": "sk2",
+    "releaseMode": "Postion",
+    "targetCfg": {
+      "targetTeam": "Dynamic",
+      "selectRule": "None",
+      "targetTypeArr": [],
+      "selectRange": 6,
+      "searchDis": 0
+    },
+    "bulletCfg": null,
+    "cdTime": 5000,
+    "spellTime": 630,
+    "isNormalAttack": false,
+    "skillTime": 1200,
+    "damage": 0,
+    "buffIDArr": [
+      10220,
+      10221,
+      10222,
+      10223
+    ],
+    "audioStart": "houyi_sk2_rls",
+    "audioWork": "",
+    "audioHit": ""
+  },
+  {
+    "id": 1023,
+    "skillID": 1023,
+    "iconName": "houyi_sk3",
+    "aniName": "sk3",
+    "releaseMode": "Direction",
+    "targetCfg": null,
+    "bulletCfg": {
+      "bulletType": "UIDirection",
+      "bulletName": "后羿大招-灼日之矢",
+      "resPath": "houyi_sk3_bullet",
+      "bulletSpeed": 1,
+      "bulletSize": 0.5,
+      "bulletHeight": 1.5,
+      "bulletOffset": 1,
+      "bulletDelay": 0,
+      "canBlock": true,
+      "impacter": {
+        "targetTeam": "Enemy",
+        "selectRule": "Hero",
+        "targetTypeArr": [
+          "Hero"
+        ],
+        "selectRange": 0,
+        "searchDis": 0
+      },
+      "bulletDuration": 5000
+    },
+    "cdTime": 8000,
+    "spellTime": 230,
+    "isNormalAttack": false,
+    "skillTime": 800,
+    "damage": 0,
+    "buffIDArr": [
+      10230,
+      10231
+    ],
+    "audioStart": "houyi_sk3_rls",
+    "audioWork": "",
+    "audioHit": "houyi_sk3_hit"
+  },
+  {
+    "id": 1024,
+    "skillID": 1024,
+    "iconName": "",
+    "aniName": "atk",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier",
+        "Tower"
+      ],
+      "selectRange": 5,
+      "searchDis": 15
+    },
+    "bulletCfg": {
+      "bulletType": "SkillTarget",
+      "bulletName": "后羿1技能强化普攻子弹",
+      "resPath": "houyi_ska_bullet_skenhance",
+      "bulletSpeed": 1,
+      "bulletSize": 0.1,
+      "bulletHeight": 1.5,
+      "bulletOffset": 0.5,
+      "bulletDelay": 0,
+      "canBlock": false,
+      "impacter": null,
+      "bulletDuration": 0
+    },
+    "cdTime": 0,
+    "spellTime": 550,
+    "isNormalAttack": true,
+    "skillTime": 1400,
+    "damage": 40,
+    "buffIDArr": [
+      10240
+    ],
+    "audioStart": "",
+    "audioWork": "houyi_ska_rls",
+    "audioHit": "com_hit2"
+  },
+  {
+    "id": 1025,
+    "skillID": 1025,
+    "iconName": "",
+    "aniName": "atk",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier",
+        "Tower"
+      ],
+      "selectRange": 5,
+      "searchDis": 15
+    },
+    "bulletCfg": {
+      "bulletType": "SkillTarget",
+      "bulletName": "后羿被动强化普攻子弹",
+      "resPath": "houyi_ska_bullet_edenhance",
+      "bulletSpeed": 1,
+      "bulletSize": 0.1,
+      "bulletHeight": 1.5,
+      "bulletOffset": 0.5,
+      "bulletDelay": 0,
+      "canBlock": false,
+      "impacter": null,
+      "bulletDuration": 0
+    },
+    "cdTime": 0,
+    "spellTime": 550,
+    "isNormalAttack": true,
+    "skillTime": 1400,
+    "damage": 20,
+    "buffIDArr": [
+      10250
+    ],
+    "audioStart": "",
+    "audioWork": "houyi_ska_multiarrow",
+    "audioHit": "houyi_multi_hit"
+  },
+  {
+    "id": 1026,
+    "skillID": 1024,
+    "iconName": "",
+    "aniName": "atk",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier",
+        "Tower"
+      ],
+      "selectRange": 5,
+      "searchDis": 15
+    },
+    "bulletCfg": {
+      "bulletType": "SkillTarget",
+      "bulletName": "后羿技能强化普攻子弹",
+      "resPath": "houyi_ska_bullet_edskmixed",
+      "bulletSpeed": 1,
+      "bulletSize": 0.1,
+      "bulletHeight": 1.5,
+      "bulletOffset": 0.5,
+      "bulletDelay": 0,
+      "canBlock": false,
+      "impacter": null,
+      "bulletDuration": 0
+    },
+    "cdTime": 0,
+    "spellTime": 550,
+    "isNormalAttack": true,
+    "skillTime": 1400,
+    "damage": 100,
+    "buffIDArr": [
+      10260
+    ],
+    "audioStart": "",
+    "audioWork": "houyi_ska_multiarrow",
+    "audioHit": "houyi_multi_hit"
+  },
+  {
+    "id": 10010,
+    "skillID": 10010,
+    "iconName": "",
+    "aniName": "",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier"
+      ],
+      "selectRange": 6,
+      "searchDis": 0
+    },
+    "bulletCfg": {
+      "bulletType": "SkillTarget",
+      "bulletName": "蓝方防御塔攻击子弹",
+      "resPath": "tower_ska_bullet",
+      "bulletSpeed": 1,
+      "bulletSize": 0.1,
+      "bulletHeight": 4,
+      "bulletOffset": 0,
+      "bulletDelay": 0,
+      "canBlock": false,
+      "impacter": null,
+      "bulletDuration": 0
+    },
+    "cdTime": 0,
+    "spellTime": 1000,
+    "isNormalAttack": true,
+    "skillTime": 2000,
+    "damage": 50,
+    "buffIDArr": [],
+    "audioStart": "",
+    "audioWork": "tower_ska_rls",
+    "audioHit": "tower_ska_hit"
+  },
+  {
+    "id": 10020,
+    "skillID": 10020,
+    "iconName": "",
+    "aniName": "",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier"
+      ],
+      "selectRange": 6,
+      "searchDis": 0
+    },
+    "bulletCfg": {
+      "bulletType": "SkillTarget",
+      "bulletName": "蓝方水晶攻击子弹",
+      "resPath": "tower_ska_bullet",
+      "bulletSpeed": 1,
+      "bulletSize": 0.1,
+      "bulletHeight": 2.5,
+      "bulletOffset": 0,
+      "bulletDelay": 0,
+      "canBlock": false,
+      "impacter": null,
+      "bulletDuration": 0
+    },
+    "cdTime": 0,
+    "spellTime": 1000,
+    "isNormalAttack": true,
+    "skillTime": 2000,
+    "damage": 100,
+    "buffIDArr": [],
+    "audioStart": "",
+    "audioWork": "tower_ska_rls",
+    "audioHit": "tower_ska_hit"
+  },
+  {
+    "id": 10030,
+    "skillID": 10030,
+    "iconName": "",
+    "aniName": "attack",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier",
+        "Tower"
+      ],
+      "selectRange": 1.5,
+      "searchDis": 5
+    },
+    "bulletCfg": null,
+    "cdTime": 0,
+    "spellTime": 400,
+    "isNormalAttack": true,
+    "skillTime": 1200,
+    "damage": 20,
+    "buffIDArr": [],
+    "audioStart": "",
+    "audioWork": "",
+    "audioHit": ""
+  },
+  {
+    "id": 10040,
+    "skillID": 10040,
+    "iconName": "",
+    "aniName": "attack",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier",
+        "Tower"
+      ],
+      "selectRange": 4,
+      "searchDis": 7
+    },
+    "bulletCfg": {
+      "bulletType": "SkillTarget",
+      "bulletName": "蓝方防远程小兵攻击子弹",
+      "resPath": "bluesoldier_ska_bullet",
+      "bulletSpeed": 0.5,
+      "bulletSize": 0.1,
+      "bulletHeight": 0.6,
+      "bulletOffset": 0,
+      "bulletDelay": 0,
+      "canBlock": false,
+      "impacter": null,
+      "bulletDuration": 0
+    },
+    "cdTime": 0,
+    "spellTime": 400,
+    "isNormalAttack": true,
+    "skillTime": 1200,
+    "damage": 30,
+    "buffIDArr": [],
+    "audioStart": "",
+    "audioWork": "",
+    "audioHit": ""
+  },
+  {
+    "id": 20010,
+    "skillID": 20010,
+    "iconName": "",
+    "aniName": "",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier"
+      ],
+      "selectRange": 6,
+      "searchDis": 0
+    },
+    "bulletCfg": {
+      "bulletType": "SkillTarget",
+      "bulletName": "红方防御塔攻击子弹",
+      "resPath": "tower_ska_bullet",
+      "bulletSpeed": 1,
+      "bulletSize": 0.1,
+      "bulletHeight": 4,
+      "bulletOffset": 0,
+      "bulletDelay": 0,
+      "canBlock": false,
+      "impacter": null,
+      "bulletDuration": 0
+    },
+    "cdTime": 0,
+    "spellTime": 1000,
+    "isNormalAttack": true,
+    "skillTime": 2000,
+    "damage": 50,
+    "buffIDArr": [],
+    "audioStart": "",
+    "audioWork": "tower_ska_rls",
+    "audioHit": "tower_ska_hit"
+  },
+  {
+    "id": 20020,
+    "skillID": 20020,
+    "iconName": "",
+    "aniName": "",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier"
+      ],
+      "selectRange": 6,
+      "searchDis": 0
+    },
+    "bulletCfg": {
+      "bulletType": "SkillTarget",
+      "bulletName": "红方水晶攻击子弹",
+      "resPath": "tower_ska_bullet",
+      "bulletSpeed": 1,
+      "bulletSize": 0.1,
+      "bulletHeight": 2.5,
+      "bulletOffset": 0,
+      "bulletDelay": 0,
+      "canBlock": false,
+      "impacter": null,
+      "bulletDuration": 0
+    },
+    "cdTime": 0,
+    "spellTime": 1000,
+    "isNormalAttack": true,
+    "skillTime": 2000,
+    "damage": 100,
+    "buffIDArr": [],
+    "audioStart": "",
+    "audioWork": "tower_ska_rls",
+    "audioHit": "tower_ska_hit"
+  },
+  {
+    "id": 20030,
+    "skillID": 20030,
+    "iconName": "",
+    "aniName": "attack",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier",
+        "Tower"
+      ],
+      "selectRange": 1.5,
+      "searchDis": 5
+    },
+    "bulletCfg": null,
+    "cdTime": 0,
+    "spellTime": 400,
+    "isNormalAttack": true,
+    "skillTime": 1200,
+    "damage": 20,
+    "buffIDArr": [],
+    "audioStart": "",
+    "audioWork": "",
+    "audioHit": ""
+  },
+  {
+    "id": 20040,
+    "skillID": 20040,
+    "iconName": "",
+    "aniName": "attack",
+    "releaseMode": "None",
+    "targetCfg": {
+      "targetTeam": "Enemy",
+      "selectRule": "TargetClosestSingle",
+      "targetTypeArr": [
+        "Hero",
+        "Soldier",
+        "Tower"
+      ],
+      "selectRange": 4,
+      "searchDis": 7
+    },
+    "bulletCfg": {
+      "bulletType": "SkillTarget",
+      "bulletName": "红方防远程小兵攻击子弹",
+      "resPath": "redsoldier_ska_bullet",
+      "bulletSpeed": 0.5,
+      "bulletSize": 0.1,
+      "bulletHeight": 0.6,
+      "bulletOffset": 0,
+      "bulletDelay": 0,
+      "canBlock": false,
+      "impacter": null,
+      "bulletDuration": 0
+    },
+    "cdTime": 0,
+    "spellTime": 400,
+    "isNormalAttack": true,
+    "skillTime": 1200,
+    "damage": 30,
+    "buffIDArr": [],
+    "audioStart": "",
+    "audioWork": "",
+    "audioHit": ""
+  }
+]

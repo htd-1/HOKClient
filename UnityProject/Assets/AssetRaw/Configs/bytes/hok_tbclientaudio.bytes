@@ -1,0 +1,13 @@
+MainBgmbgmmain主城/登录BGM	BattleBgmbgmbattle	战斗BGMLoadBgmbgmload加载界面BGMWelcombattle
+sfx_battlewelcombattle战斗开场
+Firstblood
+sfx_battle
+firstblood一血	SelfDeath
+sfx_battle	selfDeath自己阵亡SelfTowerDestroy
+sfx_battleselfTowerDestroy己方防御塔被毁DestroyEnemyTower
+sfx_battledestroyEnemyTower摧毁敌方防御塔	Victory
+sfx_battlevictory胜利
+Defeat
+sfx_battledefeat失败LoginBtnsfx_uiloginBtnClick登录按钮MatchBtnsfx_uimatchBtnClick匹配/排位/设置按钮MatchSureBtnsfx_uimatchSureClick匹配确认MatchRemindersfx_uimatchReminder匹配提醒SelectHeroBtnsfx_uiselectHeroClick	选英雄	ComClick1sfx_ui
+com_click1通用点击1	ComClick2sfx_ui
+com_click2通用点击2ComCdOksfx_ui	com_cd_ok技能CD就绪

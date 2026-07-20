@@ -1,0 +1,30 @@
+
+UnityProject/UserSettings/Layouts/
+UnityProject/UserSettings/Search.index
+UnityProject/UserSettings/Search.settings
+
+#Luban
+#注:Tools/Luban/ 运行时(Luban.exe + dll + Templates)需入库——它是 UnityProject 配置生成的运行依赖
+#   若忽略会导致 clone 方缺 Luban.exe,配置表生成跑不通。只忽略以下客户端工具和生成输出。
+Tools/Luban.ClientServer/
+Configs/.cache.meta
+GenerateDatas/
+
+#FileServer
+Tools/FileServer/AssetRoot
+
+UnityProject/ProjectSettings/CommonBurstAotSettings.json
+UnityProject/ProjectSettings/BurstAotSettings_StandaloneWindows.json
+
+#GameEventSourceGenerator
+Tools/GameEventSourceGenerator/.idea
+Tools/GameEventSourceGenerator/GameEventAnalyzer/bin
+Tools/GameEventSourceGenerator/GameEventAnalyzer/obj
+Tools/GameEventSourceGenerator/SourceGenerator/bin
+Tools/GameEventSourceGenerator/SourceGenerator/obj
+
+#ParrelSync 并行开发副本(4GB+ 缓存,保留占盘但不入库)
+UnityProject_clone_0/
+
+#openspec
+openspec/
