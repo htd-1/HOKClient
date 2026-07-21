@@ -2,6 +2,7 @@
 using System.Text;
 using HOKProtocol;
 using PEMath;
+using TEngine;
 using UnityEngine;
 
 namespace GameLogic
@@ -72,6 +73,11 @@ namespace GameLogic
 
         public void SendSkillKey(int skillID,Vector3 vec)
         {
+            if(!CanReleaseSkill(skillID))
+            {
+                Log.Info("skill can not release ");
+                return;
+            }
             HOKMsg msg = new HOKMsg
             {
                 cmd=CMD.SndOpKey,
@@ -94,11 +100,18 @@ namespace GameLogic
             NetSvc.Instance.Send(msg);
         }
 
+        private bool CanReleaseSkill(int  skillID)
+        {
+            return _fightMgr.CanReleaseSkill(_selfIndex,skillID);
+        }
         private bool CanMove()
         {
             return _fightMgr.CanMove(_selfIndex);
         }
 
-        
+        public bool IsForbidSelfPlayerReleaseSkill()
+        {
+            return _fightMgr.IsForbidReleaseSkill(_selfIndex);
+        }
     }
 }

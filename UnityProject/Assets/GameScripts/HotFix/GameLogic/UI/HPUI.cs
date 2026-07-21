@@ -20,6 +20,8 @@ namespace GameLogic
             base.OnCreate();
             AddUIEvent<MainLogicUnit, Transform>(IBattleHPUI_Event.AddHPItemInfo, OnAddHPItem);
             AddUIEvent<MainLogicUnit,int,JumpUpdateInfo>(IBattleHPUI_Event.HPValChange,UpdateHP);
+            AddUIEvent<MainLogicUnit,StateEnum,bool>(IBattleHPUI_Event.SetStateInfo,SetStateInfo);
+            AddUIEvent<JumpUpdateInfo>(IBattleHPUI_Event.UpdateJumpInfo,UpdateJumpInfo);
             // Log.Warning("HPUI OnCreate");
             _jumpNumPool=new JumpNumPool(JumpNumCount,m_rect_JumpNumRoot);
         }
@@ -73,6 +75,17 @@ namespace GameLogic
             _                => "ItemHPSoldier",
         };
 
+        private void UpdateJumpInfo(JumpUpdateInfo jui)
+        {
+            if (jui != null)
+            {
+                JumpNum jn = _jumpNumPool.PopOne();
+                if (jn != null)
+                {
+                    jn.Show(jui);
+                }
+            }
+        }
         /// <summary>刷新血量（调用方驱动，替代无效的 IBattleHPUI）。</summary>
         private void UpdateHP(MainLogicUnit unit, int hp,JumpUpdateInfo jui)
         {
@@ -104,6 +117,13 @@ namespace GameLogic
             }
         }
 
+        private void SetStateInfo(MainLogicUnit unit,StateEnum state,bool show=true)
+        {
+            if (_items.TryGetValue(unit, out HPItemWidget w))
+            {
+                w.SetStateInfo(state, show);
+            }
+        }
         // 每帧驱动血条世界→屏幕跟随（高频，不走事件）
         protected override void OnUpdate()
         {

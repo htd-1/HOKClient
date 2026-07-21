@@ -1,4 +1,5 @@
-﻿using PEMath;
+﻿using System;
+using PEMath;
 
 namespace GameLogic
 {
@@ -10,6 +11,7 @@ namespace GameLogic
     }
     public class LogicUnit:ILogic
     {
+        public Action OnDirChanged;
         /// <summary>
         /// 逻辑单位名字
         /// </summary>
@@ -27,6 +29,7 @@ namespace GameLogic
             {
                 _logicPos = value;
                 IsPosChanged = true;
+                
             }
             get=>_logicPos;
         }
@@ -39,6 +42,7 @@ namespace GameLogic
             {
                  _logicDir = value;
                  IsDirChanged = true;
+                 OnDirChanged?.Invoke();
             }
             get => _logicDir;
         }

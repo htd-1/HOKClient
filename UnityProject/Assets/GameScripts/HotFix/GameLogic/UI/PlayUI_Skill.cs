@@ -8,6 +8,7 @@ namespace GameLogic
         private SkillItem _sk1Item;
         private SkillItem _sk2Item;
         private SkillItem _sk3Item;
+        private bool _isForbidReleaseSkill;
         private void InitSkillInfo()
         {
             BattleHeroData self = _battleState.BattleHeroList[_battleState.BattleSelfIndex];
@@ -34,6 +35,23 @@ namespace GameLogic
             _sk3Item.SetForbidState(state);
         }
 
+        private void SetForbidState()
+        {
+            SetForbidState(true);
+            _isForbidReleaseSkill = true;
+        }
+
+        private void UpdateSkill()
+        {
+            if (_isForbidReleaseSkill)
+            {
+                if (!BattleInputSvc.Instance.IsForbidSelfPlayerReleaseSkill())
+                {
+                    SetForbidState(false);
+                    _isForbidReleaseSkill = false;
+                }
+            }
+        }
         /// <summary>
         /// 逻辑层施法成功后经 GameEvent 触发：找到 SkillID 匹配的技能槽进入 CD。
         /// </summary>

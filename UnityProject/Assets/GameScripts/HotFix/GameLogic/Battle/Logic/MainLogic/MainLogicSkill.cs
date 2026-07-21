@@ -37,7 +37,8 @@ namespace GameLogic
                     CreateSkillBuff(this, null, pasvBuffArr[i]);
                 }
             }
-            
+
+            OnDirChanged += ClearFreeAniCallBack;
         }
 
         private void TickSkill()
@@ -126,9 +127,16 @@ namespace GameLogic
         }
         private void UnInitSkill()
         {
-            
+            OnDirChanged -= ClearFreeAniCallBack;
         }
 
+        public void ClearFreeAniCallBack()
+        {
+            for (int i = 0; i < SkillArr.Length; i++)
+            {
+                SkillArr[i].FreeAniCallback = null;
+            }
+        }
         public bool IsSkillSpelling()
         {
             for (int i = 0; i < SkillArr.Length; i++)
@@ -139,6 +147,31 @@ namespace GameLogic
                 }
             }
             return false;
+        }
+
+        private bool IsSkillReady(int skillID)
+        {
+            for (int i = 0; i < SkillArr.Length; i++)
+            {
+                if (SkillArr[i].SkillId == skillID)
+                {
+                    return SkillArr[i].SkillState == SkillState.None;
+                }
+            }
+            return false;
+        }
+
+        public bool CanReleaseSkill(int skillID)
+        {
+            return !IsSilenced()&&
+                   !IsStunned()&&
+                   !IsKnocked()&&
+                   !IsSkillSpelling()&&
+                   IsSkillReady(skillID);
+        }
+        public bool IsForbidReleaseSkill()
+        {
+            return IsSilenced()||IsStunned()||IsKnocked();
         }
     }
 }

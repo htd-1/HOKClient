@@ -112,9 +112,9 @@ namespace GameLogic
             {
                 switch (state)
                 {
-                    case StateEnum.Silenced: _iconState.SetSprite("PlayWnd_silenceIcon"); break;
+                    case StateEnum.Silenced: _iconState.SetSprite("silenceIcon"); break;
                     case StateEnum.Knockup:
-                    case StateEnum.Stunned:  _iconState.SetSprite("PlayWnd_stunIcon");    break;
+                    case StateEnum.Stunned:  _iconState.SetSprite("stunIcon");    break;
                 }
                 _iconState.gameObject.SetActive(true);
                 _iconState.SetNativeSize();

@@ -13,5 +13,8 @@ namespace GameLogic
         void AddHPItemInfo(MainLogicUnit mainLogicUnit, Transform parent);
 
         void HPValChange(MainLogicUnit mainLogicUnit, int hp,JumpUpdateInfo jumpUpdateInfo);
+        
+        void SetStateInfo(MainLogicUnit mainLogicUnit,StateEnum state,bool show);
+        void UpdateJumpInfo(JumpUpdateInfo jumpUpdateInfo);
     }
 }

@@ -16,5 +16,7 @@ namespace GameLogic
         /// <param name="skillID">技能配置 ID（SkillCfg.SkillID）。</param>
         /// <param name="cdTime">CD 时长，毫秒。</param>
         void OnSkillEnterCD(int skillID, int cdTime);
+
+        void SetForbidState();
     }
 }

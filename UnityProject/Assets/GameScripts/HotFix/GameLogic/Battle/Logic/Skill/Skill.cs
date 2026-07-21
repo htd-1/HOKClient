@@ -59,8 +59,23 @@ namespace GameLogic
             }
             //
             if (Cfg.BuffIDArr == null) return;
-            
-            //todo
+
+            for (int i = 0; i < Cfg.BuffIDArr.Count; i++)
+            {
+                int buffID=Cfg.BuffIDArr[i];
+                if (buffID == 0)
+                {
+                    Log.Warning($"skillID{Cfg.SkillID}exist buffID==0");
+                    continue;
+                }
+                BuffCfg buffCfg =GameServices.Config.GetBuff(buffID);
+
+                if (buffCfg.Attacher == AttachType.Target
+                    ||buffCfg.Attacher==AttachType.Bullet)
+                {
+                    target.CreateSkillBuff(Owner, this, buffID, args);
+                }
+            }
         }
          /// <summary>
          /// 技能生效
@@ -82,7 +97,7 @@ namespace GameLogic
         /// 施法前摇
         /// </summary>
         /// <param name="spellDir"></param>
-        private void SKillSpellStart(PEVector3 spellDir)
+        private void SkillSpellStart(PEVector3 spellDir)
         {
             SkillState=SkillState.SpellStart;
             if (Cfg.AudioStart != null)
@@ -95,7 +110,10 @@ namespace GameLogic
                 Owner.MainViewUnit.UpdateSkillRotation(spellDir);
             }
 
-            if (Cfg.AniName != null)
+            // aniName 可能为 null(原版 buff 触发型技能,如 1011/1012/1021)或
+            // 空串(Luban 数据 skill.get("aniName","") 把缺省降级为 ""),
+            // 两者都表示"无施法动画",用 IsNullOrEmpty 一并跳过,避免 CrossFade("") 报错。
+            if (!string.IsNullOrEmpty(Cfg.AniName))
             {
                 Owner.InputFakeMoveKey(PEVector3.zero);
                 Owner.PlayAni(Cfg.AniName);
@@ -118,14 +136,17 @@ namespace GameLogic
             if (Owner.IsPlayerSelf() && !Cfg.IsNormalAttack)
             {
                 // 进入技能 CD：通知表现层（PlayUI 监听后驱动 SkillItem.EnterCDState）
-                Log.Info(1);
+                
                 GameEvent.Get<IBattlePlayUI>().OnSkillEnterCD(Cfg.SkillID, Cfg.CdTime);
                 
             }
             //技能释放成功回调 提供事件buff
             SpellSuccCallback?.Invoke(this);
 
-            if (Cfg.AniName != null)
+            // aniName 可能为 null(原版 buff 触发型技能,如 1011/1012/1021)或
+            // 空串(Luban 数据 skill.get("aniName","") 把缺省降级为 ""),
+            // 两者都表示"无施法动画",用 IsNullOrEmpty 一并跳过,避免 CrossFade("") 报错。
+            if (!string.IsNullOrEmpty(Cfg.AniName))
             {
                 Owner.RecoverUIInput();
             }
@@ -169,7 +190,7 @@ namespace GameLogic
                 if (LockTarget != null)
                 {
                     PEVector3 spellDir=LockTarget.LogicPos-Owner.LogicPos;
-                    SKillSpellStart(spellDir);
+                    SkillSpellStart(spellDir);
 
                     void SkillWork()
                     {
@@ -210,7 +231,7 @@ namespace GameLogic
             //非目标技能
             else
             {
-                SKillSpellStart(skillArgs);
+                SkillSpellStart(skillArgs);
                 
                 void DirectionBullet()
                 {
@@ -270,7 +291,7 @@ namespace GameLogic
             set 
             {
                tempSkillID = value;
-               Log.Info($"set tempSkillID:{tempSkillID}");
+               // Log.Info($"set tempSkillID:{tempSkillID}");
             }
         }
 

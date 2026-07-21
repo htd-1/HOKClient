@@ -217,6 +217,14 @@ namespace GameLogic
             return _heroList[posIndex].CanMove();
         }
 
+        public bool CanReleaseSkill(int posIndex, int skillID)
+        {
+            return _heroList[posIndex].CanReleaseSkill(skillID);
+        }
+        public bool IsForbidReleaseSkill(int posIndex)
+        {
+            return _heroList[posIndex].IsForbidReleaseSkill();
+        }
     }  
     
 }

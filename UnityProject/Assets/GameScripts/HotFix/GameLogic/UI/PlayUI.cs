@@ -21,7 +21,6 @@ namespace GameLogic
 
        // 推送式：缓存战斗域状态（技能图标初始化用 BattleHeroList/SelfIndex）。HP/技能倒计时等表现层接缝（IBattlePlayUI/IBattleHPUI）不变。
        private BattleState _battleState;
-       private GameEventMgr _dataMgr;
        private bool _skillInited;
 
         #region 事件
@@ -41,11 +40,11 @@ namespace GameLogic
             _defaultPos = m_img_dirBg.transform.position;
 
             // 推送式：订阅战斗域状态 + 拉首次快照（RequestSnapshot 同步触发 Changed → OnBattleDataChanged → InitSkillInfo）
-            _dataMgr = new GameEventMgr();
-            _dataMgr.AddEvent<BattleState>(IBattleData_Event.Changed, OnBattleDataChanged);
+            AddUIEvent<BattleState>(IBattleData_Event.Changed, OnBattleDataChanged);
 
             AddUIEvent<bool>(IBattlePlayUI_Event.OnSkillCancel,OnSkillCancel);
             AddUIEvent<int, int>(IBattlePlayUI_Event.OnSkillEnterCD, OnSkillEnterCD);
+            AddUIEvent(IBattlePlayUI_Event.SetForbidState,SetForbidState);
             RegisterMoveEvents();
 
             GameEvent.Get<IBattleCmd>().RequestSnapshot();
@@ -53,9 +52,8 @@ namespace GameLogic
 
         protected override void OnDestroy()
         {
-            _dataMgr?.Clear();
-            _dataMgr = null;
             base.OnDestroy();
+            EventMgr?.Clear();
         }
 
         private void OnBattleDataChanged(BattleState state)
@@ -129,6 +127,8 @@ namespace GameLogic
                 InputMoveKey(keyDir);
                 _lastKeyDir=keyDir;
             }
+
+            UpdateSkill();
         }
 
 

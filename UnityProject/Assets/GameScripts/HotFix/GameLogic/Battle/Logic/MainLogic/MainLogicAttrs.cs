@@ -165,11 +165,47 @@ namespace GameLogic
             }
         }
 
+        public void GetDamageByBuff(PEInt damage, Buff buff,bool calcCB=true)
+        {
+            Log.Info("1ci");
+            if(calcCB)OnHurt?.Invoke();
+
+            if (!string.IsNullOrEmpty(buff.Cfg.HitTickAudio))
+            {
+                PlayAudio(buff.Cfg.HitTickAudio);
+            }
+            PEInt hurt = damage - Def;
+            if (hurt > 0)
+            {
+                Hp-=hurt;
+                if (Hp <= 0)
+                {
+                    Hp = 0;
+                    UnitState = UnitState.Dead;
+                    InputFakeMoveKey(PEVector3.zero);
+                    OnDeath?.Invoke(buff.Source);
+                    PlayAni("death");
+                    
+                }
+
+                JumpUpdateInfo jui=null;
+                if (IsPlayerSelf()||buff.Source.IsPlayerSelf()||buff.Owner.IsPlayerSelf())
+                {
+                    jui = new JumpUpdateInfo
+                    {
+                        JumpVal = damage.RawInt,
+                        JumpType = JumpType.SkillDamage,
+                        JumpAni = JumpAni.RightCurve
+                    };
+                }
+                OnHpChange?.Invoke(Hp.RawInt,jui);
+            }
+        }
         public void GetCureByBuff(PEInt cure,Buff buff)
         {
             if (Hp >= UnitData.UnitCfg.Hp)
             {
-                Log.Info("血量已经回复");
+                // Log.Info("血量已经回复");
             }
 
             Hp += cure;

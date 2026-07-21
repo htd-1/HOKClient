@@ -38,6 +38,8 @@ namespace GameLogic
             _mainLogicUnit.OnHpChange += UpdateHP;
             //血条显示：不在此发 AddHPItemInfo（LogicInit 跑在 FightMgr 设 IsFriend 之前，此时 unit.IsFriend 还是 false）
             // Log.Info("我已启动");
+            _mainLogicUnit.OnStateChange+=UpdateState;
+            _mainLogicUnit.OnSlowDown += UpdateJui;
         }
 
         /// <summary>发 AddHPItemInfo 注册血条。由 FightMgr 在 IsFriend 固化后命令式调用，避免时序问题。</summary>
@@ -67,6 +69,7 @@ namespace GameLogic
         private void OnDestroy()
         {
             _mainLogicUnit.OnHpChange -= UpdateHP;
+            _mainLogicUnit.OnStateChange-=UpdateState;
         }
 
         public virtual void OnDeath(MainLogicUnit unit)
@@ -116,6 +119,27 @@ namespace GameLogic
             
             
             GameEvent.Get<IBattleHPUI>().HPValChange(_mainLogicUnit,hp,jui);
+        }
+
+        public void UpdateJui(JumpUpdateInfo jui)
+        {
+            if(jui==null)return;
+            float scaleRate = 1.0f * ClientConfig.ScreenStandardHeight / Screen.height;
+            Vector3 screenPos =Camera.main.WorldToScreenPoint(transform.position+new Vector3(0,1,0));
+            GameEvent.Get<IBattleHPUI>().UpdateJumpInfo(jui);
+        }
+        public void UpdateState(StateEnum state,bool show)
+        {
+            if (state == StateEnum.Knockup ||
+                state == StateEnum.Silenced ||
+                state == StateEnum.Stunned)
+            {
+                if (_mainLogicUnit.IsPlayerSelf() && show)
+                {
+                    GameEvent.Get<IBattlePlayUI>().SetForbidState();
+                }
+            }
+            GameEvent.Get<IBattleHPUI>().SetStateInfo(_mainLogicUnit,state,show);
         }
         public void UpdateSkillRotation(PEVector3 skillRotation)
         {

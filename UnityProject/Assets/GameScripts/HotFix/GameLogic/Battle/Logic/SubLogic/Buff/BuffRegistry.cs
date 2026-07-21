@@ -23,18 +23,31 @@ namespace GameLogic
         {
             _ctors.Clear();
 
-            Reg(BuffType.MoveSpeed_Single,
-                (src, owner, skill, id, args)
-                    => new MoveSpeedBuff_Single(src, owner, skill, id, args));
+            // ===== 单体/通用 buff =====
+            Reg(BuffType.HPCure,                 (src, owner, skill, id, args) => new HPCureBuff_Single(src, owner, skill, id, args));
+            Reg(BuffType.ModifySkill,            (src, owner, skill, id, args) => new CommonModifySkillBuff(src, owner, skill, id, args));
+            Reg(BuffType.MoveSpeed_Single,       (src, owner, skill, id, args) => new MoveSpeedBuff_Single(src, owner, skill, id, args));
+            Reg(BuffType.ArthurMark,             (src, owner, skill, id, args) => new ArthurMarkBuff(src, owner, skill, id, args));
+            Reg(BuffType.Silense,                (src, owner, skill, id, args) => new SilenceBuff_Single(src, owner, skill, id, args));
+            Reg(BuffType.TargetFlashMove,        (src, owner, skill, id, args) => new TargetFlashMoveBuff(src, owner, skill, id, args));
+            Reg(BuffType.ExecuteDamage,          (src, owner, skill, id, args) => new ExecuteDamageBuff(src, owner, skill, id, args));
+            Reg(BuffType.Stun_Single_DynamicTime,(src, owner, skill, id, args) => new StunBuff_DynamicTime(src, owner, skill, id, args));
+            Reg(BuffType.HouyiActiveSkillModify, (src, owner, skill, id, args) => new HouyiScatterSkillModifyBuff(src, owner, skill, id, args));
+            Reg(BuffType.Scatter,                (src, owner, skill, id, args) => new HouyiScatterArrowBuff(src, owner, skill, id, args));
+            Reg(BuffType.HouyiPasvAttackSpeed,   (src, owner, skill, id, args) => new HouyiPasvAttackSpeedBuff(src, owner, skill, id, args));
+            Reg(BuffType.HouyiPasvSkillModify,   (src, owner, skill, id, args) => new HouyiMultipleSkillModifyBuff(src, owner, skill, id, args));
+            Reg(BuffType.HouyiPasvMultiArrow,    (src, owner, skill, id, args) => new HouyiMultipleArrowBuff(src, owner, skill, id, args));
+            Reg(BuffType.HouyiMixedMultiScatter, (src, owner, skill, id, args) => new HouyiMixedMultiScatterBuff(src, owner, skill, id, args));
+            Reg(BuffType.MoveAttack,             (src, owner, skill, id, args) => new MoveAttackBuff(src, owner, skill, id, args));
 
-            Reg(BuffType.HPCure,
-                (src,owner,skill,id,args)
-                =>new HPCureBuff_Single(src, owner, skill, id, args));
-            Reg(BuffType.ModifySkill,
-                (src,owner,skill,id,args)
-                    =>new CommonModifySkillBuff(src, owner, skill, id, args));
-            // 其余 BuffType(HPCure/ArthurMark/Stun/...)的子类逻辑尚未迁移,
-            // 每补一个 XxxBuff.cs 后,在此追加一行 Reg(...)。
+            // ===== 群体 buff(对应 GroupBuff\ 子目录) =====
+            Reg(BuffType.MoveSpeed_DynamicGroup, (src, owner, skill, id, args) => new MoveSpeedBuff_DynamicGroup(src, owner, skill, id, args));
+            Reg(BuffType.MoveSpeed_StaticGroup,  (src, owner, skill, id, args) => new MoveSpeedBuff_StaticGroup(src, owner, skill, id, args));
+            Reg(BuffType.Knockup_Group,          (src, owner, skill, id, args) => new KnockUpBuff_Group(src, owner, skill, id, args));
+            Reg(BuffType.Damage_DynamicGroup,    (src, owner, skill, id, args) => new DamageBuff_DynamicGroup(src, owner, skill, id, args));
+            Reg(BuffType.Damage_StaticGroup,     (src, owner, skill, id, args) => new DamageBuff_StaticGroup(src, owner, skill, id, args));
+
+            // DirectionFlashMove:枚举有定义但原版未实现,暂不注册。
         }
 
         private static void Reg(BuffType type, BuffCtor ctor)
@@ -56,7 +69,7 @@ namespace GameLogic
                 Log.Error($"[BuffRegistry] cfg 为空 buffID={buffID}");
                 return null;
             }
-            Log.Info($"{cfg}");
+            // Log.Info($"{cfg}");
             if (!_ctors.TryGetValue(cfg.BuffType, out var ctor))
             {
                 Log.Error($"[BuffRegistry] 未注册的 BuffType:{cfg.BuffType}(buffID={buffID})");

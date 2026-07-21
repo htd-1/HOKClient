@@ -66,8 +66,10 @@ namespace GameLogic
         public void InputMoveKey(PEVector3 dir)
         {
             _uiInputDir = dir;
-            _inputDir = dir;
-            // Log.Info("InputDir:"+dir.ConvertViewVector3());
+           if(!IsSkillSpelling()&&
+              !IsStunned()&&
+              !IsKnocked()) _inputDir = dir;
+            
         }
         /// <summary>
         /// 模拟输入方向
@@ -91,6 +93,8 @@ namespace GameLogic
         {
             _envColliderList = list;
         }
+
+        
 
         public bool CanMove()
         {

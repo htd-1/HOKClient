@@ -58,11 +58,11 @@ namespace GameLogic
             int fontSize = (int)Mathf.Clamp(ji.JumpVal * 1.0f / MaxFontValue, MinFont, MaxFont);
             Text.fontSize = fontSize;
             Rect.anchoredPosition = ji.Pos;
-            Log.Info("我运行到这里了");
+            // Log.Info("我运行到这里了");
             switch (ji.JumpType)
             {
                 case JumpType.SkillDamage:
-                    Log.Info("我运行到这里了1");
+                    // Log.Info("我运行到这里了1");
                     Text.text = ji.JumpVal.ToString();
                     Text.color = SkillDamageColor;
                     break;
