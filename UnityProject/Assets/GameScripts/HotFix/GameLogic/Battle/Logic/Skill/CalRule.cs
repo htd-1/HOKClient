@@ -53,6 +53,127 @@ namespace GameLogic
             set { _redTeamSoldier = value; }
         }
 
+
+        public static MainLogicUnit FindMinDisEnemyTarget(MainLogicUnit self, TargetCfg cfg)
+        {
+            MainLogicUnit target = null;
+            List<MainLogicUnit>targetTeam=GetTargetTeam(self,cfg);
+
+
+           
+            int count=targetTeam.Count;
+            PEVector3 selfPos = self.LogicPos;
+            PEInt len = 0;
+            for (int i = 0; i < count; i++)
+            {
+                PEInt sumRaius=targetTeam[i].UnitData.UnitCfg.ColliderCfg.mRadius+self.
+                    UnitData.UnitCfg.ColliderCfg.mRadius;
+                PEInt tempLen=(targetTeam[i].LogicPos-selfPos).magnitude-sumRaius;
+                if ((len == 0&&target==null)||tempLen<len)
+                {
+                    len=tempLen;
+                    target = targetTeam[i];
+                }
+            }
+            
+            return target;
+        }
+
+        public static List<MainLogicUnit> FindMultipleTargetByRUle(MainLogicUnit self,TargetCfg cfg,PEVector3 pos)
+        {
+            List<MainLogicUnit> searchList=GetTargetTeam(self, cfg);
+
+            List<MainLogicUnit> targetList = null;
+
+            switch (cfg.SelectRule)
+            {
+                case SelectRule.TargetClosetMultiple:
+                    targetList = FindRangeDisTargetInTeam(self, searchList, (PEInt)cfg.SelectRange);
+                    break;
+                case SelectRule.PositionClosestMultiple:
+                    targetList=FindRangeDisTargetInPos(pos, searchList, (PEInt)cfg.SelectRange);
+                    break;
+                case SelectRule.Hero:
+                    
+                    targetList=new List<MainLogicUnit>();
+                    targetList.AddRange(searchList);
+                    break;
+                
+                default:
+                    Log.Warning("select target error");
+                    break;
+            }
+
+
+            return targetList;
+        }
+        /// <summary>
+        /// 指定列表，离制定目标角色半径的所有目标
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="targetTeam"></param>
+        /// <param name="range"></param>
+        /// <returns></returns>
+        private static List<MainLogicUnit> FindRangeDisTargetInTeam(MainLogicUnit self, List<MainLogicUnit> targetTeam, PEInt range)
+        {
+            if (targetTeam == null||range<0)
+            {
+                return null;
+            }
+
+            List<MainLogicUnit> target = new  List<MainLogicUnit>();
+            int count=targetTeam.Count;
+            PEVector3 selfPos = self.LogicPos;
+            PEInt len = 0;
+            for (int i = 0; i < count; i++)
+            {
+                PEInt sumRaius=targetTeam[i].UnitData.UnitCfg.ColliderCfg.mRadius+self.UnitData.
+                    UnitCfg.ColliderCfg.mRadius;
+
+                PEInt sqrLen = (targetTeam[i].LogicPos - selfPos).sqrMagnitude;
+
+                if (sqrLen < (range + sumRaius) * (range + sumRaius))
+                {
+                    target.Add(targetTeam[i]);
+                }
+            }
+
+            return target;
+        }
+    
+        /// <summary>
+        /// 指定目标点的所有半径范围的所有目标
+        /// </summary>
+        /// <param name="pos"></param>
+        /// <param name="targetTeam"></param>
+        /// <param name="range"></param>
+        /// <returns></returns>
+        private static List<MainLogicUnit> FindRangeDisTargetInPos(PEVector3 pos, List<MainLogicUnit> targetTeam, PEInt range)
+        {
+            if (targetTeam == null||range<0)
+            {
+                return null;
+            }
+
+            List<MainLogicUnit> target = new  List<MainLogicUnit>();
+            int count=targetTeam.Count;
+            
+            PEInt len = 0;
+            for (int i = 0; i < count; i++)
+            {
+                PEInt sumRaius = targetTeam[i].UnitData.UnitCfg.ColliderCfg.mRadius;
+
+                PEInt sqrLen = (targetTeam[i].LogicPos - pos).sqrMagnitude;
+
+                if (sqrLen < (range +sumRaius) * (range + sumRaius))
+                {
+                    target.Add(targetTeam[i]);
+                }
+            }
+
+            return target;
+        }
+        
         public static MainLogicUnit FindSingleTargetByRule(MainLogicUnit self,TargetCfg cfg,PEVector3 pos)
         {
             List<MainLogicUnit> searchTeam = GetTargetTeam(self,cfg);
@@ -79,7 +200,7 @@ namespace GameLogic
 
         private static MainLogicUnit FindMinDisTargetInTeam(MainLogicUnit self, List<MainLogicUnit> targetTeam, PEInt range)
         {
-            if (targetTeam == null)
+            if (targetTeam == null||range<0)
             {
                 return null;
             }

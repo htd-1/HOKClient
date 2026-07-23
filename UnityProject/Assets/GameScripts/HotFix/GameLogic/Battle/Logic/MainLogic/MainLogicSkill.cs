@@ -125,6 +125,18 @@ namespace GameLogic
             Log.Error($"skillID{skillID} not found");
             return null;
         }
+
+        public Buff GetBuffByID(int buffID)
+        {
+            for (int i = 0; i < _buffList.Count; i++)
+            {
+                if (_buffList[i].Cfg.BuffID == buffID)
+                {
+                    return _buffList[i];
+                }
+            }
+            return null;
+        }
         private void UnInitSkill()
         {
             OnDirChanged -= ClearFreeAniCallBack;

@@ -71,6 +71,10 @@ namespace GameLogic
             return true;
         }
 
+        public void SendSkillKey(int skillID)
+        {
+            SendSkillKey(skillID,Vector3.zero);
+        }
         public void SendSkillKey(int skillID,Vector3 vec)
         {
             if(!CanReleaseSkill(skillID))

@@ -143,13 +143,22 @@ namespace GameLogic
                 PEVector3 logicDir = PEVector3.zero;
                 if (dir!=Vector2.zero)
                 {
+                    GameEvent.Get<IBuffEvent>().CheckUIInput(true);
                     logicDir.x = (PEInt)dirVec3.x;
                     logicDir.y = (PEInt)dirVec3.y;
                     logicDir.z = (PEInt)dirVec3.z;
                 }
+                else
+                {
+                    GameEvent.Get<IBuffEvent>().CheckUIInput(false);
+                }
                 bool isSend=BattleInputSvc.Instance.SendMoveKey(logicDir);
                 if(isSend)_lastStickDir=dir;
             }
+            
         }
+
+        
+        
     }
 }

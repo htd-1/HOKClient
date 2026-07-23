@@ -125,9 +125,9 @@ namespace GameLogic
             {
                 switch (state)
                 {
-                    case StateEnum.Silenced: _imgState.SetSprite("PlayWnd_silenceState"); break;
-                    case StateEnum.Knockup:  _imgState.SetSprite("PlayWnd_knockState");   break;
-                    case StateEnum.Stunned:  _imgState.SetSprite("PlayWnd_stunState");    break;
+                    case StateEnum.Silenced: _imgState.SetSprite("silenceState"); break;
+                    case StateEnum.Knockup:  _imgState.SetSprite("knockState");   break;
+                    case StateEnum.Stunned:  _imgState.SetSprite("stunState");    break;
                 }
                 if (_txtName != null) _txtName.gameObject.SetActive(false);
                 _imgState.gameObject.SetActive(true);

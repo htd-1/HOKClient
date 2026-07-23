@@ -166,6 +166,25 @@ namespace GameLogic
         /// </summary>
         private void SkillEnd()
         {
+            if (SkillState == SkillState.None ||
+                SkillState == SkillState.SpellStart)
+            {
+                if (Owner.IsPlayerSelf())
+                {
+                    if (Cfg.TargetCfg != null 
+                        && Cfg.TargetCfg.TargetTeam == TargetTeam.Enemy
+                        && Cfg.TargetCfg.SearchDis > 0)
+                    {
+                        Buff mf = Owner.GetBuffByID(ClientConfig.CommonMoveAttackBuffID);
+                        if (mf != null)
+                        {
+                            mf.UnitState = SubUnitState.End;
+                        }
+                        Log.Info("技能释放没有成功");
+                        Owner.CreateSkillBuff(Owner, this, ClientConfig.CommonMoveAttackBuffID);
+                    }
+                }
+            }
             if (FreeAniCallback != null)
             {
                 FreeAniCallback();
