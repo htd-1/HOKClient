@@ -194,7 +194,7 @@ namespace GameLogic
                     jui = new JumpUpdateInfo
                     {
                         JumpVal = damage.RawInt,
-                        JumpType = JumpType.SkillDamage,
+                        JumpType = JumpType.BuffDamage,
                         JumpAni = JumpAni.RightCurve
                     };
                 }

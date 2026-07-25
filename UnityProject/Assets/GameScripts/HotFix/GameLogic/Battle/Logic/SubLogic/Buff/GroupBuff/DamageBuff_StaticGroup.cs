@@ -73,9 +73,10 @@ namespace GameLogic
                 CalcRule.
                     FindMultipleTargetByRUle(
                         Owner,Cfg.Impacter,LogicPos));
-
+            Log.Info(_targetList.Count);
             for (int i = 0; i < _targetList.Count; i++)
             {
+                Log.Info($"第{i}个实体受伤{_damage}");
                 _targetList[i].GetDamageByBuff(_damage,this);
             }
         }
