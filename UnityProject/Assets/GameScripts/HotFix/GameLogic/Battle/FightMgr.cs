@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 using HOKProtocol;
@@ -34,7 +34,7 @@ namespace GameLogic
             if (_selfHero == null || unit == null) return false;
             return unit.IsTeam(_selfHero.UnitData.Team);
         }
-        public void Init(List<BattleHeroData> battleHeroList,MapCfg mapCfg,int selfIndex)
+        public void Init()
         {
             _heroList=new List<Hero>();
             //初始化
@@ -44,15 +44,18 @@ namespace GameLogic
 
             InitEnv();
 
-            InitHero(battleHeroList,mapCfg);
+            // 启动数据走 instance 直读（BattleSystem 持 BattleState、ConfigService 出地图配置），
+            // 替代原 Init(battleHeroList, mapCfg, selfIndex) 三参注入：FightMgr 自取，owner 不必代为准备。
+            var sys = BattleSystem.Instance;
+            InitHero(sys.BattleHeroList, ConfigService.Instance.GetMap(sys.BattleMapID));
 
-            _selfIndex = selfIndex;
+            _selfIndex = sys.BattleSelfIndex;
             if(_selfIndex >= 0 && _selfIndex < _heroList.Count)
             {
                 _selfHero = _heroList[_selfIndex];
             }
 
-            InitCamFollowTrans(selfIndex);
+            InitCamFollowTrans(_selfIndex);
 
             // isFriend 必须在 OnSelfHeroLoaded 之前固化：OnSelfHeroLoaded 会触发 View 创建/Init，
             // MainViewUnit.Init 随即发 AddHPItemInfo(unit, hpRoot)，HPUI 读 unit.IsFriend——晚一步就读到默认 false（全红）。
@@ -94,20 +97,20 @@ namespace GameLogic
                     HeroID = battleHeroList[i].heroID,
                     PosIndex = i,
                     UserName = battleHeroList[i].userName,
-                    UnitCfg = GameServices.Config.GetHero(battleHeroList[i].heroID),
+                    UnitCfg = ConfigService.Instance.GetHero(battleHeroList[i].heroID),
                 };
                 Hero hero;
                 if (i < sep)
                 {
                     hd.Team = Team.Blue;
-                    hd.BornPos = mapCfg.BlueBorn;
+                    hd.BornPos = mapCfg.BlueBorn+new PEVector3(0,0,(PEInt)1.5*i);
                     hero = new Hero(hd);
                     blueTeam[i] = hero;
                 }
                 else
                 {
                     hd.Team = Team.Red;
-                    hd.BornPos = mapCfg.RedBorn;
+                    hd.BornPos = mapCfg.RedBorn+new PEVector3(0,0,(PEInt)1.5*(i-sep));
                     hero = new Hero(hd);
                     redTeam[i - sep] = hero;
                 }
@@ -115,8 +118,8 @@ namespace GameLogic
                 hero.SetEnvColliders(_logicEnv.GetEnvColliders());
                 _heroList.Add(hero);
             }
-            CalRule.BlueTeamHero=blueTeam;
-            CalRule.RedTeamHero=redTeam;
+            CalcRule.BlueTeamHero=blueTeam;
+            CalcRule.RedTeamHero=redTeam;
             
         }
         public void UnInit()

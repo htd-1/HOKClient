@@ -1,4 +1,4 @@
-﻿using HOKProtocol;
+using HOKProtocol;
 
 namespace GameLogic
 {
@@ -12,7 +12,7 @@ namespace GameLogic
         private void InitSkillInfo()
         {
             BattleHeroData self = _battleState.BattleHeroList[_battleState.BattleSelfIndex];
-            UnitCfg heroCfg = GameServices.Config.GetUnit(self.heroID);
+            UnitCfg heroCfg = ConfigService.Instance.GetUnit(self.heroID);
             int[] skillArr = heroCfg.SkillArr;
             
             _skaItem = CreateWidget<SkillItem>("m_rect_skill/m_img_ultSkill"); 
@@ -20,10 +20,10 @@ namespace GameLogic
             _sk2Item = CreateWidget<SkillItem>("m_rect_skill/m_img_skill2");
             _sk3Item = CreateWidget<SkillItem>("m_rect_skill/m_img_skill3");
             
-            _skaItem.Init(GameServices.Config.GetSkill(skillArr[0]),0);
-            _sk1Item.Init(GameServices.Config.GetSkill(skillArr[1]),1);
-            _sk2Item.Init(GameServices.Config.GetSkill(skillArr[2]),2);
-            _sk3Item.Init(GameServices.Config.GetSkill(skillArr[3]),3);
+            _skaItem.Init(ConfigService.Instance.GetSkill(skillArr[0]),0);
+            _sk1Item.Init(ConfigService.Instance.GetSkill(skillArr[1]),1);
+            _sk2Item.Init(ConfigService.Instance.GetSkill(skillArr[2]),2);
+            _sk3Item.Init(ConfigService.Instance.GetSkill(skillArr[3]),3);
             SetForbidState(false);
             m_rect_skillInfo.gameObject.SetActive(false);
         }
@@ -45,7 +45,7 @@ namespace GameLogic
         {
             if (_isForbidReleaseSkill)
             {
-                if (!BattleInputSvc.Instance.IsForbidSelfPlayerReleaseSkill())
+                if (!BattleSystem.Instance.IsForbidSelfPlayerReleaseSkill())
                 {
                     SetForbidState(false);
                     _isForbidReleaseSkill = false;

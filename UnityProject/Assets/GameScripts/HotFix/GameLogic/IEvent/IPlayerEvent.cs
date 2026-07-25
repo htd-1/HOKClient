@@ -1,3 +1,4 @@
+using HOKProtocol;
 using TEngine;
 
 namespace GameLogic
@@ -10,9 +11,12 @@ namespace GameLogic
     [EventInterface(EEventGroup.GroupLogic)]
     public interface IPlayerEvent
     {
-        /// <summary>登录响应已处理（UserData 已写入 SessionState 并经 IPlayerData 推送）。</summary>
+        /// <summary>登录响应已处理（UserData 已写入 SessionState 并经 IPlayerEvent 推送）。</summary>
         /// <param name="success">是否登录成功。</param>
         /// <param name="message">提示信息。</param>
         void LoginResult(bool success, string message);
+
+        /// <summary>UserData 变更推送（含 UI 打开时 RequestSnapshot 触发的首次快照）。</summary>
+        void Changed(UserData data);
     }
 }

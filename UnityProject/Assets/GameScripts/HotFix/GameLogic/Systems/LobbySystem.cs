@@ -5,35 +5,18 @@ namespace GameLogic
 {
     /// <summary>
     /// L3 Lobby 域业务系统。
-    /// <para>监听 <see cref="ILobbyCmd"/>（①命令）处理匹配/确认/选英雄/加载进度发包；监听 <see cref="ILobbyEvent"/>（②原始包下行，
-    /// 由 <see cref="NetMessageBindings"/> 发）写 <see cref="LobbyState"/> 发 <see cref="ILobbyData"/>（③推送）/ <see cref="ILobbyUI"/>。</para>
+    /// <para>上行命令（匹配/确认/选英雄/加载进度/清流程）为 public 方法，UI/Procedure 直接 <c>LobbySystem.Instance.Method()</c> 调用。</para>
+    /// <para>原始包下行（RspMatch/NtfXxx）由 <see cref="NetSvc.HandoutMsg"/> 直调本系统 public 方法（不再经 GameEvent 路由）；
+    /// 处理后写 <see cref="LobbyState"/> + 发 <see cref="ILobbyEvent"/>（Changed/ShowMatchInfo 下行）。
+    /// 多消费者包（NtfConfirm/NtfSelect/NtfLoadRes）由本系统重广播 <c>ILobbyEvent.OnNtfXxx</c> 供 Procedure(FSM)/BattleSystem(跨域)响应。</para>
     /// <para>倒计时（MatchConfirm/Select）由内部 <c>GameModule.Timer</c> 驱动递减 + 每秒推送 Changed，取代 UI 自持 Timer。</para>
-    /// <para>对 <see cref="NetSvc"/> 走 ④直接调用。<see cref="LobbyState"/> 为本域唯一状态源（旧 RuntimeData 双写已删）。</para>
-    /// <para><b>纪律</b>：业务代码不接触 <c>LobbySystem.Instance</c>，只经 <c>GameEvent.Get&lt;ILobbyCmd&gt;()</c> 触发。</para>
+    /// <para>对 <see cref="NetSvc"/> 走直接调用。<see cref="LobbyState"/> 为本域唯一状态源。</para>
     /// </summary>
-    public sealed class LobbySystem : GameSystem<LobbySystem>
+    public sealed class LobbySystem : Singleton<LobbySystem>
     {
         private readonly LobbyState _state = new LobbyState();
         private int _matchConfirmTimerId = -1;
         private int _selectTimerId = -1;
-
-        protected override void RegisterCommands(GameEventMgr events)
-        {
-            // ①命令（UI/Procedure 发）
-            events.AddEvent<PVPEnum>(ILobbyCmd_Event.ReqMatch, OnReqMatch);
-            events.AddEvent(ILobbyCmd_Event.SndConfirm, OnSndConfirm);
-            events.AddEvent<int>(ILobbyCmd_Event.SndSelect, OnSndSelect);
-            events.AddEvent(ILobbyCmd_Event.RequestSnapshot, OnRequestSnapshot);
-            events.AddEvent<int>(ILobbyCmd_Event.ReportLoadProgress, OnReportLoadProgress);
-            events.AddEvent(ILobbyCmd_Event.LoadComplete, OnLoadComplete);
-            events.AddEvent(ILobbyCmd_Event.ClearFlow, OnClearFlow);
-            // ②原始包事件（NetMessageBindings 发，下行；Procedure 亦听以驱动 FSM 流转）
-            events.AddEvent<RspMatch>(ILobbyEvent_Event.OnRspMatch, OnRspMatch);
-            events.AddEvent<NtfConfirm>(ILobbyEvent_Event.OnNtfConfirm, OnNtfConfirm);
-            events.AddEvent(ILobbyEvent_Event.OnNtfSelect, OnNtfSelect);
-            events.AddEvent<NtfLoadRes>(ILobbyEvent_Event.OnNtfLoadRes, OnNtfLoadRes);
-            events.AddEvent<NtfLoadPrg>(ILobbyEvent_Event.OnNtfLoadPrg, OnNtfLoadPrg);
-        }
 
         public override void Release()
         {
@@ -42,42 +25,48 @@ namespace GameLogic
             base.Release();
         }
 
-        // === ①命令处理 ===
-        private void OnReqMatch(PVPEnum pvpMode)
+        // === 上行命令（UI/Procedure 直接调）===
+
+        /// <summary>请求匹配（1V1/2V2）。</summary>
+        public void ReqMatch(PVPEnum pvpMode)
         {
             NetSvc.Instance.Send(new HOKMsg { cmd = CMD.ReqMatch, reqMatch = new ReqMatch { pvpEnum = pvpMode } });
         }
 
-        private void OnSndConfirm()
+        /// <summary>发送确认（匹配确认）。</summary>
+        public void SndConfirm()
         {
             NetSvc.Instance.Send(new HOKMsg { cmd = CMD.SndConfirm, sndConfirm = new SndConfirm { roomID = _state.MatchRoomID } });
         }
 
-        private void OnSndSelect(int heroID)
+        /// <summary>发送选英雄。</summary>
+        public void SndSelect(int heroID)
         {
             _state.SetSelectedHero(heroID);
             StopSelectTimer();
             NetSvc.Instance.Send(new HOKMsg { cmd = CMD.SndSelect, sndSelect = new SndSelect { roomID = _state.MatchRoomID, heroID = heroID } });
         }
 
-        private void OnRequestSnapshot()
+        /// <summary>UI 打开时拉当前大厅快照（补推 ILobbyEvent.Changed）。</summary>
+        public void RequestSnapshot()
         {
-            GameEvent.Get<ILobbyData>().Changed(_state);
+            GameEvent.Get<ILobbyEvent>().Changed(_state);
         }
 
-        // === 加载进度上报 / 加载完成（ProcedureLoad 场景加载驱动；原 BattleSys.SceneLoadProgress/SceneLoadDone 逻辑迁此）===
-        private void OnReportLoadProgress(int percent)
+        /// <summary>上报本地加载进度（0-100，ProcedureLoad 场景加载进度回调触发）。</summary>
+        public void ReportLoadProgress(int percent)
         {
             NetSvc.Instance.Send(new HOKMsg { cmd = CMD.SndLoadPrg, sndLoadPrg = new SndLoadPrg { roomID = _state.MatchRoomID, percent = percent } });
         }
 
-        private void OnLoadComplete()
+        /// <summary>本地加载完成（ProcedureLoad 场景加载完成触发，发 ReqBattleStart 通知服务器开战）。</summary>
+        public void LoadComplete()
         {
             NetSvc.Instance.Send(new HOKMsg { cmd = CMD.ReqBattleStart, reqBattleStart = new ReqBattleStart { roomID = _state.MatchRoomID } });
         }
 
-        /// <summary>清空大厅流程数据（匹配预测/确认/选英雄/加载进度；ProcedureLobby 进大厅新一轮匹配前调，重置 LobbyState）。</summary>
-        private void OnClearFlow()
+        /// <summary>清空大厅流程数据（匹配预测/确认/选英雄/加载进度；ProcedureLobby 进大厅新一轮匹配前调）。</summary>
+        public void ClearFlow()
         {
             StopMatchConfirmTimer();
             StopSelectTimer();
@@ -88,24 +77,28 @@ namespace GameLogic
             _state.ClearLoading();
         }
 
-        // === ②原始包下行处理 ===
-        private void OnRspMatch(RspMatch data)
+        // === 原始包下行（NetSvc.HandoutMsg 直调，public 入口）===
+
+        /// <summary>匹配响应（无下游消费者，仅写状态 + UI 下行）。</summary>
+        public void RspMatch(RspMatch data)
         {
             _state.SetMatchPredictTime(data.predictTime);
             _state.SetMatching(true, data.predictTime);
-            GameEvent.Get<ILobbyUI>().ShowMatchInfo(true, data.predictTime);
-            GameEvent.Get<ILobbyData>().Changed(_state);
+            GameEvent.Get<ILobbyEvent>().ShowMatchInfo(true, data.predictTime);
+            GameEvent.Get<ILobbyEvent>().Changed(_state);
         }
 
-        private void OnNtfConfirm(NtfConfirm confirm)
+        /// <summary>确认通知（多消费者：重广播 OnNtfConfirm 供 ProcedureLobby/ProcedureMatch 驱动 FSM + BattleSystem 捕获 roomID）。</summary>
+        public void NtfConfirm(NtfConfirm confirm)
         {
             if (confirm.dissmiss)
             {
                 _state.ClearMatchConfirm();
                 _state.SetMatching(false);
                 StopMatchConfirmTimer();
-                GameEvent.Get<ILobbyUI>().ShowMatchInfo(false, 0);
-                GameEvent.Get<ILobbyData>().Changed(_state);
+                GameEvent.Get<ILobbyEvent>().ShowMatchInfo(false, 0);
+                GameEvent.Get<ILobbyEvent>().Changed(_state);
+                GameEvent.Get<ILobbyEvent>().OnNtfConfirm(confirm);
                 return;
             }
 
@@ -118,28 +111,34 @@ namespace GameLogic
             {
                 _state.UpdateMatchConfirm(confirm);
             }
-            GameEvent.Get<ILobbyData>().Changed(_state);
+            GameEvent.Get<ILobbyEvent>().Changed(_state);
+            GameEvent.Get<ILobbyEvent>().OnNtfConfirm(confirm);
         }
 
-        private void OnNtfSelect()
+        /// <summary>选英雄通知（多消费者：重广播 OnNtfSelect 供 ProcedureMatch→ProcedureSelect 流转）。</summary>
+        public void NtfSelect()
         {
             StopMatchConfirmTimer();
             _state.StartSelect(ServerConfig.SelectCountDown);
             StartSelectTimer();
-            GameEvent.Get<ILobbyData>().Changed(_state);
+            GameEvent.Get<ILobbyEvent>().Changed(_state);
+            GameEvent.Get<ILobbyEvent>().OnNtfSelect();
         }
 
-        private void OnNtfLoadRes(NtfLoadRes data)
+        /// <summary>加载资源通知（多消费者：重广播 OnNtfLoadRes 供 ProcedureSelect→ProcedureLoad 流转 + BattleSystem 流入启动数据）。</summary>
+        public void NtfLoadRes(NtfLoadRes data)
         {
             StopSelectTimer();
             _state.StartLoading(data);
-            GameEvent.Get<ILobbyData>().Changed(_state);
+            GameEvent.Get<ILobbyEvent>().Changed(_state);
+            GameEvent.Get<ILobbyEvent>().OnNtfLoadRes(data);
         }
 
-        private void OnNtfLoadPrg(NtfLoadPrg data)
+        /// <summary>加载进度通知（仅写状态 + UI 下行，无下游消费者）。</summary>
+        public void NtfLoadPrg(NtfLoadPrg data)
         {
             _state.UpdateLoadingProgress(data);
-            GameEvent.Get<ILobbyData>().Changed(_state);
+            GameEvent.Get<ILobbyEvent>().Changed(_state);
         }
 
         // === 倒计时 Timer（内部驱动，取代 UI 自持 Timer 读 RuntimeData）===
@@ -161,7 +160,7 @@ namespace GameLogic
         private void OnMatchConfirmTick(object[] args)
         {
             _state.TickMatchConfirm();
-            GameEvent.Get<ILobbyData>().Changed(_state);
+            GameEvent.Get<ILobbyEvent>().Changed(_state);
         }
 
         private void StartSelectTimer()
@@ -182,7 +181,7 @@ namespace GameLogic
         private void OnSelectTick(object[] args)
         {
             _state.TickSelect();
-            GameEvent.Get<ILobbyData>().Changed(_state);
+            GameEvent.Get<ILobbyEvent>().Changed(_state);
         }
     }
 }

@@ -42,15 +42,20 @@ namespace GameLogic
                     {
                         new BattleHeroData { heroID = 101, userName = "hdt1" },
                         new BattleHeroData { heroID = 102, userName = "hdt2" },
+                        new BattleHeroData { heroID = 101, userName = "hdt3" },
+                        new BattleHeroData { heroID = 101, userName = "hdt4" },
+                        new BattleHeroData { heroID = 101, userName = "hdt5" },
+                        new BattleHeroData { heroID = 102, userName = "hdt6" },
                     },
                     posIndex=0
                 }
             };
             
             // 离线模式补发确认（与在线流程对齐；模拟服务器不响应，仅走客户端命令链路）
-            GameEvent.Get<ILobbyCmd>().SndConfirm();
-            
-            NetMsg.Route(msg);
+            LobbySystem.Instance.SndConfirm();
+
+            // 注入收包队列，由 NetSvc.Pump→HandoutMsg 分发（与在线收包同路径）
+            NetSvc.Instance.AddMsgQue(msg);
             
             return UniTask.CompletedTask;
         }
@@ -61,8 +66,8 @@ namespace GameLogic
             {
                cmd=CMD.RspBattleStart
             };
-            
-            NetMsg.Route(msg);
+
+            NetSvc.Instance.AddMsgQue(msg);
             
             return  UniTask.CompletedTask;
         }

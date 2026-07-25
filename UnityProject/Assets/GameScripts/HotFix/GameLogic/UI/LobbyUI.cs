@@ -1,7 +1,6 @@
 
 using HOKProtocol;
 using TEngine;
-using AudioType = TEngine.AudioType;
 
 namespace GameLogic
 {
@@ -15,14 +14,14 @@ namespace GameLogic
 
 		private partial void OnClick_match1v1Btn()
 		{
-			GameModule.Audio.Play(AudioType.UISound, GameServices.Config.GetAudio(AudioKey.MatchBtn));
-			GameEvent.Get<ILobbyCmd>().ReqMatch(PVPEnum._1V1);
+			AudioSvc.Instance.PlayUIAudio(ConfigService.Instance.GetAudio(AudioKey.MatchBtn));
+			LobbySystem.Instance.ReqMatch(PVPEnum._1V1);
 		}
 
 		private partial void OnClick_rankBtn()
 		{
-			GameModule.Audio.Play(AudioType.UISound, GameServices.Config.GetAudio(AudioKey.MatchBtn));
-			GameEvent.Get<ILobbyCmd>().ReqMatch(PVPEnum._2V2);
+			AudioSvc.Instance.PlayUIAudio(ConfigService.Instance.GetAudio(AudioKey.MatchBtn));
+			LobbySystem.Instance.ReqMatch(PVPEnum._2V2);
 		}
 
 		#endregion
@@ -31,11 +30,11 @@ namespace GameLogic
 		{
 			base.OnCreate();
 			m_rect_matchInfoRoot.gameObject.SetActive(false);
-			// 推送式：私有 mgr 订阅 ILobbyUI.ShowMatchInfo（匹配浮层）+ IPlayerData.Changed（玩家信息）+ 拉首次快照
+			// 推送式：私有 mgr 订阅 ILobbyEvent.ShowMatchInfo（匹配浮层）+ IPlayerEvent.Changed（玩家信息）+ 拉首次快照
 			_dataMgr = new GameEventMgr();
-			_dataMgr.AddEvent<bool, int>(ILobbyUI_Event.ShowMatchInfo, ShowMatchInfo);
-			_dataMgr.AddEvent<UserData>(IPlayerData_Event.Changed, OnPlayerDataChanged);
-			GameEvent.Get<IPlayerCmd>().RequestSnapshot();
+			_dataMgr.AddEvent<bool, int>(ILobbyEvent_Event.ShowMatchInfo, ShowMatchInfo);
+			_dataMgr.AddEvent<UserData>(IPlayerEvent_Event.Changed, OnPlayerDataChanged);
+			LoginSystem.Instance.RequestSnapshot();
 		}
 
 		protected override void OnDestroy()

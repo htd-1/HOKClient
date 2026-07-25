@@ -1,7 +1,6 @@
 using HOKProtocol;
 using UnityEngine.UI;
 using TEngine;
-using AudioType = TEngine.AudioType;
 
 namespace GameLogic
 {
@@ -17,9 +16,9 @@ namespace GameLogic
 		private partial void OnClick_confirmBtn()
 		{
 			m_btn_confirm.interactable = false;
-			GameModule.Audio.Play(AudioType.UISound, GameServices.Config.GetAudio(AudioKey.MatchSureBtn));
-			// ①命令：发 ILobbyCmd.SndConfirm（LobbySystem 监听后发包）
-			GameEvent.Get<ILobbyCmd>().SndConfirm();
+			AudioSvc.Instance.PlayUIAudio(ConfigService.Instance.GetAudio(AudioKey.MatchSureBtn));
+			// 上行直调 LobbySystem（发包）
+			LobbySystem.Instance.SndConfirm();
 		}
 
 		#endregion
@@ -28,10 +27,10 @@ namespace GameLogic
 		protected override void OnCreate()
 		{
 			base.OnCreate();
-			// 推送式：订阅 ILobbyData.Changed 刷新确认数据/倒计时 + 拉首次快照（倒计时由 LobbySystem Timer 驱动）
+			// 推送式：订阅 ILobbyEvent.Changed 刷新确认数据/倒计时 + 拉首次快照（倒计时由 LobbySystem Timer 驱动）
 			_dataMgr = new GameEventMgr();
-			_dataMgr.AddEvent<LobbyState>(ILobbyData_Event.Changed, OnLobbyDataChanged);
-			GameEvent.Get<ILobbyCmd>().RequestSnapshot();
+			_dataMgr.AddEvent<LobbyState>(ILobbyEvent_Event.Changed, OnLobbyDataChanged);
+			LobbySystem.Instance.RequestSnapshot();
 		}
 
 		protected override void OnDestroy()

@@ -1,25 +1,20 @@
-using System.Collections.Generic;
-
 using HOKProtocol;
-using PEMath;
-using PEPhysx;
 using TEngine;
-
-using AudioType = TEngine.AudioType;
 
 namespace GameLogic
 {
     /// <summary>
-    /// 战斗流程状态机节点。
+    /// 战斗流程状态机节点（纯编排）。
+    /// <para>战斗生命周期/帧驱动/输入收发已归 <see cref="BattleSystem"/>（EnterBattle/Tick/ExitBattle）。</para>
+    /// <para>本类仅：OnEnter 开 UI + 场景 BGM + 调 EnterBattle；OnUpdate 调 Tick；OnLeave 关 UI + 调 ExitBattle；
+    /// 以及听 <see cref="IBattleEvent"/>.OnRspBattleEnd 流转到结算 UI。</para>
     /// </summary>
     public class ProcedureBattle : ProcedureBase
     {
         private IFsm<IProcedureModule> _procedureOwner;
         private GameEventMgr _mgr = new();
-        private bool _isTickFight;
-      
-        private FightMgr _fightMgr;
-        
+        private bool _ended;
+
         protected override void OnInit(IFsm<IProcedureModule> procedureOwner)
         {
             base.OnInit(procedureOwner);
@@ -29,15 +24,14 @@ namespace GameLogic
 
         private void RegisterEvents()
         {
-            _mgr.AddEvent<NtfOpKey>(IBattleEvent_Event.OnNtfOpKey, OnNtfOpKey);
             _mgr.AddEvent<RspBattleEnd>(IBattleEvent_Event.OnRspBattleEnd, OnRspBattleEnd);
-            // _mgr.AddEvent<int, int>(IBattleEndUI_Event.OnBattleEnd, OnOfflineBattleEnd);
         }
-        
+
         private void ClearEvents()
         {
             _mgr.Clear();
         }
+
         protected override void OnDestroy(IFsm<IProcedureModule> procedureOwner)
         {
             base.OnDestroy(procedureOwner);
@@ -50,18 +44,11 @@ namespace GameLogic
             GameModule.UI.CloseUI<LoadUI>();
             GameModule.UI.ShowUI<PlayUI>();
             GameModule.UI.ShowUI<HPUI>();
-            GameModule.Audio.Play(AudioType.Music,GameServices.Config.GetAudio(AudioKey.BattleBgm));
+            AudioSvc.Instance.PlayBGM(ConfigService.Instance.GetAudio(AudioKey.BattleBgm));
+            AudioSvc.Instance.PlaySound(ConfigService.Instance.GetAudio(AudioKey.Welcombattle));
 
-            GameModule.Audio.Play(AudioType.Sound, GameServices.Config.GetAudio(AudioKey.Welcombattle));
-            
-            _fightMgr=new FightMgr();
-            // 启动数据从域 BattleState 读（BattleSystem.OnNtfLoadRes 已流入）
-            MapCfg mapCfg = GameServices.Config.GetMap(BattleSystem.Instance.BattleMapID);
-            _fightMgr.Init(BattleSystem.Instance.BattleHeroList, mapCfg, BattleSystem.Instance.BattleSelfIndex);
-            _isTickFight = true;
-
-            // roomID 由 BattleSystem 跨域流入（OnNtfConfirm）；selfIndex 用 FightMgr 自身值。FSM 收口豁免读 Instance。
-            BattleInputSvc.Instance.Active(_fightMgr, _fightMgr.SelfIndex, BattleSystem.Instance.MatchRoomID);
+            _ended = false;
+            BattleSystem.Instance.EnterBattle();
         }
 
         protected override void OnLeave(IFsm<IProcedureModule> procedureOwner, bool isShutdown)
@@ -69,47 +56,21 @@ namespace GameLogic
             base.OnLeave(procedureOwner, isShutdown);
             GameModule.UI.CloseUI<PlayUI>();
             GameModule.UI.CloseUI<HPUI>();
-            BattleInputSvc.Instance.Release();
-            BattleSystem.Instance.ClearBattle(); // 清 BattleState（FSM 收口豁免 Instance）；加载进度数据由下次进大厅 ClearFlow 清
+            BattleSystem.Instance.ExitBattle();
         }
-
 
         protected override void OnUpdate(IFsm<IProcedureModule> procedureOwner, float elapseSeconds, float realElapseSeconds)
         {
             base.OnUpdate(procedureOwner, elapseSeconds, realElapseSeconds);
-            _fightMgr?.Update();
-        }
-
-        private void OnNtfOpKey(NtfOpKey data)
-        {
-            // 战斗就绪前（OnInit 已注册监听，但 OnEnter 未跑、_fightMgr 为空）也会收到 GM 模拟下发的 NtfOpKey，需判空跳过。
-            if (_fightMgr == null) return;
-            _fightMgr.InputKey(data.keyList);
-            if(_isTickFight)_fightMgr.Tick();
+            BattleSystem.Instance.Tick();
         }
 
         private void OnRspBattleEnd(RspBattleEnd data)
         {
-            
-            ExitToResult();
-        }
-        
-
-      
-        private void ExitToResult()
-        {
-            if (!_isTickFight) return;
-            _isTickFight = false;
-           
+            // 防重入：结算包可能重复，仅首次显示结算 UI。Tick 已由 BattleSystem.RspBattleEnd 停止。
+            if (_ended) return;
+            _ended = true;
             GameModule.UI.ShowUI<ResultUI>();
-            
         }
-        
-        public List<PEColliderBase> GetEnvColliders()
-        {
-            return _fightMgr.GetEnvColliders();
-        }
-
-        
     }
 }

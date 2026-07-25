@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using HOKProtocol;
 
@@ -98,7 +98,7 @@ namespace GameLogic
 
         public Buff CreateSkillBuff(MainLogicUnit source, Skill skill, int buffID, object[] args = null)
         {
-            Buff buff=BuffRegistry.Create(GameServices.Config.GetBuff(buffID),source,this,skill,buffID, args);
+            Buff buff=BuffRegistry.Create(ConfigService.Instance.GetBuff(buffID),source,this,skill,buffID, args);
             buff.LogicInit();
             _buffList.Add(buff);
             

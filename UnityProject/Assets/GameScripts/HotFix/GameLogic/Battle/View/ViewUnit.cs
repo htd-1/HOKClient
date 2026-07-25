@@ -136,43 +136,17 @@ namespace GameLogic
         {
             return Quaternion.FromToRotation(Vector3.forward,targetDir);
         }
-        
-        public abstract void PlayAni(string aniName);
 
-        public virtual async void PlayAudio(string audioName, bool loop = false, int delay=0)
+        public virtual void PlayAni(string aniName)
         {
-            //todo 逻辑收敛，当前表现层做了不该做的逻辑，之后需要优化
-            if (string.IsNullOrEmpty(audioName)) return;
-            if (AudioSource == null)
-            {
-                AudioSource = GetComponent<AudioSource>();
-                if (AudioSource == null)
-                {
-                    Log.Error("Can't find AudioSource");
-                    return;
-                }
-            }
-            if(delay>0)await UniTask.Delay(delay);
-            var handle =GameModule.Resource.LoadAssetAsyncHandle<AudioClip>(audioName);
-            await handle.ToUniTask();
             
-            if(this==null)
-            {
-                handle.Dispose();
-                return;
-            }
+        }
 
-            var clip = handle.AssetObject as AudioClip;
-            if(clip==null)
-            {
-                handle.Dispose();
-                return;
-            }
-
-            AudioSource.clip = clip;
-            AudioSource.loop = loop;
-            AudioSource.Play();
-
+        public virtual void PlayAudio(string audioName, bool loop = false, int delay = 0)
+        {
+            // 转发壳：音频管线归 AudioSvc（实体音用本组件 AudioSource，保留多实体并发 + 3D 定位）。
+            if (AudioSource == null) AudioSource = GetComponent<AudioSource>();
+            AudioSvc.Instance.PlayEntityAudio(audioName, AudioSource, loop, delay).Forget();
         }
         
     }

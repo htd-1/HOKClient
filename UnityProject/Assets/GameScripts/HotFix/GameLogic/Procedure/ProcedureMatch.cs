@@ -5,7 +5,7 @@ namespace GameLogic
 {
     /// <summary>
     /// 匹配确认状态（纯编排）：显示 MatchUI；听 <see cref="ILobbyEvent"/> 驱动流转。
-    /// <para>确认发包/刷新业务已迁 <see cref="LobbySystem"/>（MatchUI 订阅 ILobbyData.Changed 自动刷新）。</para>
+    /// <para>确认发包/刷新业务已迁 <see cref="LobbySystem"/>（MatchUI 订阅 ILobbyEvent.Changed 自动刷新）。</para>
     /// </summary>
     public class ProcedureMatch : TEngine.ProcedureBase
     {

@@ -167,7 +167,7 @@ namespace GameLogic
 
         public void GetDamageByBuff(PEInt damage, Buff buff,bool calcCB=true)
         {
-            Log.Info("1ci");
+            // Log.Info("1ci");
             if(calcCB)OnHurt?.Invoke();
 
             if (!string.IsNullOrEmpty(buff.Cfg.HitTickAudio))

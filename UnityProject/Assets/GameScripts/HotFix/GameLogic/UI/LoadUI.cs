@@ -16,10 +16,10 @@ namespace GameLogic
 		protected override void OnCreate()
 		{
 			base.OnCreate();
-			// 推送式：订阅 ILobbyData.Changed 刷新加载进度 + 拉首次快照（替代直读 RuntimeData）
+			// 推送式：订阅 ILobbyEvent.Changed 刷新加载进度 + 拉首次快照（替代直读 RuntimeData）
 			_dataMgr = new GameEventMgr();
-			_dataMgr.AddEvent<LobbyState>(ILobbyData_Event.Changed, OnLobbyDataChanged);
-			GameEvent.Get<ILobbyCmd>().RequestSnapshot();
+			_dataMgr.AddEvent<LobbyState>(ILobbyEvent_Event.Changed, OnLobbyDataChanged);
+			LobbySystem.Instance.RequestSnapshot();
 		}
 
 		protected override void OnDestroy()
@@ -68,10 +68,10 @@ namespace GameLogic
 			if (!hasHero) return;
 
 			BattleHeroData hero = heroes[index];
-			string resName = GameServices.Config.GetHeroResName(hero.heroID);
+			string resName = ConfigService.Instance.GetHeroResName(hero.heroID);
 
 			playerRoot.Find("heroimg").GetComponent<Image>().SetSprite(resName + "_load", setNativeSize: false);
-			playerRoot.Find("heroName").GetComponent<TextMeshProUGUI>().text = GameServices.Config.GetHeroName(hero.heroID);
+			playerRoot.Find("heroName").GetComponent<TextMeshProUGUI>().text = ConfigService.Instance.GetHeroName(hero.heroID);
 			playerRoot.Find("nameBg/playerName").GetComponent<TextMeshProUGUI>().text = hero.userName;
 			playerRoot.Find("progress").GetComponent<TextMeshProUGUI>().text = _state.GetLoadingProgress(index) + "%";
 		}

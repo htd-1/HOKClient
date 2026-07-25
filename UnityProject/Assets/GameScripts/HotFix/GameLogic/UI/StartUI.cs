@@ -1,8 +1,7 @@
-﻿using TMPro;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using TEngine;
-using AudioType = TEngine.AudioType;
 
 namespace GameLogic
 {
@@ -13,7 +12,7 @@ namespace GameLogic
 
 		private partial void OnClickStartBtn()
 		{
-			GameModule.Audio.Play(AudioType.UISound, GameServices.Config.GetAudio(AudioKey.ComClick1));
+			AudioSvc.Instance.PlayUIAudio(ConfigService.Instance.GetAudio(AudioKey.ComClick1));
 			GameEvent.Get<IStartEvent>().OnEnterLobby();
 		}
 

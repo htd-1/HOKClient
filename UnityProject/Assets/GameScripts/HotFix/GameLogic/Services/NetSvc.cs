@@ -18,11 +18,7 @@ namespace GameLogic
     }
 
     /// <summary>
-    /// 纯网络传输层：连接/断开/发送/Ping/收包队列/重连检测。
-    /// <para>Pump 内置协议错误门：<c>msg.error != None</c> 在分发前统一拦截，永不进入业务监听者。</para>
-    /// <para>业务分发委托给 <see cref="NetMsg"/>。本类不引用任何具体 CMD（<see cref="CMD.ReqPing"/> 心跳为唯一例外）。</para>
-    /// <para>L4 自持网络/选服状态（产生者即持有者）：status/error/message/ping 留本类，经 <see cref="INetworkEvent"/> 广播；
-    /// 不再反向写 L5（旧 RuntimeData 网络袋已删）。选服由 LoginSystem 经 <see cref="SetServerSelection"/> ④直接调用传入。</para>
+    /// 网络服务
     /// </summary>
     public class NetSvc : Singleton<NetSvc>, IUpdate
     {
@@ -47,7 +43,7 @@ namespace GameLogic
         public ErrorCode NetworkError { get; private set; }
         public string NetworkMessage { get; private set; }
 
-        /// <summary>选服（登录前由 LoginSystem 经 ④直接调用传入；Connect 据此选 IP）。</summary>
+        
         public void SetServerSelection(bool isPublicServer) => _isPublicServer = isPublicServer;
 
         private void SetNetworkStatusCore(NetworkStatus status, string message)
@@ -76,8 +72,7 @@ namespace GameLogic
             KCPTool.ErrorFunc = msg => Log.Error(msg);
             KCPTool.ColorLogFunc = (color, msg) => Log.Info(msg);
 
-            // Ping 应答由传输层直接处理（不进 NetMessageBindings），保持 Ping 逻辑内聚于 NetSvc。
-            NetMsg.Subscribe(CMD.RspPing, msg => HandleRspPing(msg.rspPing));
+            // Ping 应答由 HandoutMsg 直调 HandleRspPing（与其它包统一分发路径），不再单独 Subscribe。
         }
 
         protected override void OnRelease()
@@ -144,11 +139,14 @@ namespace GameLogic
 
         public void Send(HOKMsg msg)
         {
-            if (GameServices.GM.IsActive)
+#if UNITY_EDITOR
+            // GM 离线模拟：临时调试工具，仅编辑器生效，打包运行时不编译。
+            if (GMService.Instance.IsActive)
             {
-                GameServices.GM.SimulateServerRcvMsg(msg);
+                GMService.Instance.SimulateServerRcvMsg(msg);
                 return;
             }
+#endif
             if (!IsConnected)
             {
                 const string message = "服务器未连接，消息发送失败";
@@ -235,10 +233,57 @@ namespace GameLogic
                 return;
             }
 
-            try { NetMsg.Route(msg); }
-            catch (Exception e) { Log.Error($"[NetSvc] route cmd={msg.cmd} throw: {e}"); }
+            try { HandoutMsg(msg); }
+            catch (Exception e) { Log.Error($"[NetSvc] handout cmd={msg.cmd} throw: {e}"); }
         }
 
+        /// <summary>
+        /// 处理网络包信息
+        /// </summary>
+        /// <param name="msg"></param>
+        private void HandoutMsg(HOKMsg msg)
+        {
+            switch (msg.cmd)
+            {
+                case CMD.RspLogin:
+                    LoginSystem.Instance.RspLogin(msg.rspLogin);
+                    break;
+                case CMD.RspMatch:
+                    LobbySystem.Instance.RspMatch(msg.rspMatch);
+                    break;
+                case CMD.NtfConfirm:
+                    LobbySystem.Instance.NtfConfirm(msg.ntfConfirm);
+                    break;
+                case CMD.NtfSelect:
+                    LobbySystem.Instance.NtfSelect();
+                    break;
+                case CMD.NtfLoadRes:
+                    LobbySystem.Instance.NtfLoadRes(msg.ntfLoadRes);
+                    break;
+                case CMD.NtfLoadPrg:
+                    LobbySystem.Instance.NtfLoadPrg(msg.ntfLoadPrg);
+                    break;
+                case CMD.RspBattleStart:
+                    BattleSystem.Instance.RspBattleStart(msg.rspBatlleStart);
+                    break;
+                case CMD.NtfOpKey:
+                    BattleSystem.Instance.NtfOpKey(msg.ntfOpKey);
+                    break;
+                case CMD.NtfChat:
+                    BattleSystem.Instance.NtfChat(msg.ntfChat);
+                    break;
+                case CMD.RspBattleEnd:
+                    BattleSystem.Instance.RspBattleEnd(msg.rspBattleEnd);
+                    break;
+                case CMD.RspPing:
+                    HandleRspPing(msg.rspPing);
+                    break;
+                default:
+                    Log.Warning($"[NetSvc] unhandled CMD: {msg.cmd}");
+                    break;
+            }
+        }
+        
         private void HandleProtocolError(ErrorCode error)
         {
             switch (error)

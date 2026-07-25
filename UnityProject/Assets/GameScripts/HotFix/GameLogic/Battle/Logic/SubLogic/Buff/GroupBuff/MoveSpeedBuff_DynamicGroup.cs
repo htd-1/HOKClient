@@ -21,7 +21,7 @@ namespace GameLogic
 
             _targetList = new List<MainLogicUnit>();
             
-            _targetList.AddRange(CalRule.FindMultipleTargetByRUle(Owner,Cfg.Impacter,Skill.SkillArgs));
+            _targetList.AddRange(CalcRule.FindMultipleTargetByRUle(Owner,Cfg.Impacter,Skill.SkillArgs));
             
             MoveSpeedBuffCfg msbc=Cfg as MoveSpeedBuffCfg;
             _speedOffset = msbc.Amount;
@@ -42,7 +42,7 @@ namespace GameLogic
             
             _targetList.Clear();
             
-            _targetList.AddRange(CalRule.
+            _targetList.AddRange(CalcRule.
                 FindMultipleTargetByRUle
                 (Owner,Cfg.Impacter,Skill.SkillArgs));
             ModifyMoveSpeed(_speedOffset);

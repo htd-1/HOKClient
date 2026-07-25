@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using dnlib.DotNet.Writer;
 using GameConfig.hok;
 using HOKProtocol;
+using TEngine;
+using UnityEngine;
 
 namespace GameLogic
 {
@@ -16,6 +18,8 @@ namespace GameLogic
         private int _tickCount = 0;//Dot
         private int _durationCount = 0;//时长计时
         public BuffCfg Cfg;
+        
+        private BuffView _buffView;
         /// <summary>
         /// 群体buff作用目标
         /// </summary>
@@ -31,7 +35,7 @@ namespace GameLogic
 
         public override void LogicInit()
         {
-            Cfg=GameServices.Config.GetBuff(BuffID);
+            Cfg=ConfigService.Instance.GetBuff(BuffID);
             BuffDuration=Cfg.BuffDuration;
             _delayTime = Cfg.BuffDelay;
             
@@ -78,17 +82,51 @@ namespace GameLogic
 
         protected override void Start()
         {
-            
+            if (!string.IsNullOrEmpty(Cfg.BuffEffect))
+            {
+                GameObject go=GameModule.Resource.LoadGameObject(Cfg.BuffEffect);
+                go.name = Source.UnitName + "_" + Cfg.BuffName;
+                _buffView = go.AddComponent<BuffView>();
+                if (_buffView == null)
+                {
+                    Log.Error("Get BuffView error"+UnitName);
+                }
+
+                
+                _buffView.Init(this);
+                if (Cfg.StaticPosType == StaticPosType.None)
+                {
+                    Owner.MainViewUnit.SetBuffFollower(_buffView);
+                } 
+                
+                if (!string.IsNullOrEmpty(Cfg.BuffAudio))
+                {
+                    _buffView.PlayAudio(Cfg.BuffAudio);
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(Cfg.BuffAudio))
+                {
+                    Owner.PlayAudio(Cfg.BuffAudio);
+                }
+            }
         }
 
         protected override void Tick()
         {
-           
+            if (!string.IsNullOrEmpty(Cfg.HitTickAudio) &&_targetList is { Count: > 0 })
+            {
+                Owner.PlayAudio(Cfg.HitTickAudio);
+            }
         }
 
         protected override void End()
         {
-            
+            if (!string.IsNullOrEmpty(Cfg.BuffEffect))
+            {
+                _buffView.DestroyBuff();
+            }
         }
     }
 }

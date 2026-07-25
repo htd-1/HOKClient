@@ -1,6 +1,5 @@
 using GameLogic;
 using TEngine;
-using AudioType = TEngine.AudioType;
 
 public class ProcedureLogin : TEngine.ProcedureBase
 {
@@ -24,7 +23,7 @@ public class ProcedureLogin : TEngine.ProcedureBase
     {
         base.OnEnter(procedureOwner);
         NetSvc.Instance.Connect();
-        GameModule.Audio.Play(AudioType.Music, GameServices.Config.GetAudio(AudioKey.MainBgm), true);
+        AudioSvc.Instance.PlayBGM(ConfigService.Instance.GetAudio(AudioKey.MainBgm));
         GameModule.UI.ShowUIAsync<LoginUI>();
     }
 

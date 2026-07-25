@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
 using Cysharp.Threading.Tasks.Triggers;
@@ -45,7 +45,7 @@ namespace GameLogic
 			
 			
 			_pointDis = Screen.height * 1.0f / ClientConfig.ScreenStandardHeight *
-			            GameServices.Config.ClientSetting.SkillOPDis;
+			            ConfigService.Instance.ClientSetting.SkillOPDis;
 
 			
 			if (!_skillCfg.IsNormalAttack)
@@ -87,7 +87,7 @@ namespace GameLogic
 					if (_skillCfg.ReleaseMode == ReleaseMode.Postion)
 					{
 						if (dir == Vector2.zero) return;
-						dir = BattleInputSvc.Instance.SkillDisMultipler * dir;
+						dir = BattleSystem.Instance.SkillDisMultipler * dir;
 						Vector2 clampDir = Vector2.ClampMagnitude(dir, _skillCfg.TargetCfg.SelectRange);
 						Vector3 clampDirVector3 =new Vector3(clampDir.x, 0, clampDir.y);
 						clampDirVector3 = Quaternion.Euler(0, 45, 0) * clampDirVector3;
@@ -107,7 +107,7 @@ namespace GameLogic
 						Log.Warning("this type not define in code");
 					}
 
-					if (len >= GameServices.Config.ClientSetting.SkillCancelDis)
+					if (len >= ConfigService.Instance.ClientSetting.SkillCancelDis)
 					{
 						GameEvent.Get<IBattlePlayUI>().OnSkillCancel(true);
 					}
@@ -128,7 +128,7 @@ namespace GameLogic
 					
 					ShowSkillAtkRange(false);
 
-					if (dir.magnitude >= GameServices.Config.ClientSetting.SkillCancelDis)
+					if (dir.magnitude >= ConfigService.Instance.ClientSetting.SkillCancelDis)
 					{
 						_viewHero.DisableSkillGuide(skillindex);
 						return;
@@ -140,7 +140,7 @@ namespace GameLogic
 					}
 					else if (_skillCfg.ReleaseMode == ReleaseMode.Postion)
 					{
-						dir = BattleInputSvc.Instance.SkillDisMultipler * dir;
+						dir = BattleSystem.Instance.SkillDisMultipler * dir;
 						Vector2 clampDir = Vector2.ClampMagnitude(dir, _skillCfg.TargetCfg.SelectRange);
 						Vector3 clampDirVector3 =new Vector3(clampDir.x, 0, clampDir.y);
 						clampDirVector3 = Quaternion.Euler(0, 45, 0) * clampDirVector3;
@@ -282,12 +282,12 @@ namespace GameLogic
 		}
 		public void ClickSkillItem()
 		{
-			BattleInputSvc.Instance.SendSkillKey(_skillCfg.SkillID,Vector3.zero);
+			BattleSystem.Instance.SendSkillKey(_skillCfg.SkillID,Vector3.zero);
 		}
 
 		public void ClickSkillItem(Vector3 vec)
 		{
-			BattleInputSvc.Instance.SendSkillKey(_skillCfg.SkillID,vec);
+			BattleSystem.Instance.SendSkillKey(_skillCfg.SkillID,vec);
 		}
 		public void SetForbidState(bool state)
 		{

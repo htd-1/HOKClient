@@ -35,19 +35,19 @@ namespace GameLogic
         {
             base.OnCreate();
             m_img_arrow.gameObject.SetActive(false);
-            _pointDis = Screen.height * 1.0f / ClientConfig.ScreenStandardHeight * GameServices.Config.ClientSetting.OpDis;
+            _pointDis = Screen.height * 1.0f / ClientConfig.ScreenStandardHeight * ConfigService.Instance.ClientSetting.OpDis;
 
             _defaultPos = m_img_dirBg.transform.position;
 
             // 推送式：订阅战斗域状态 + 拉首次快照（RequestSnapshot 同步触发 Changed → OnBattleDataChanged → InitSkillInfo）
-            AddUIEvent<BattleState>(IBattleData_Event.Changed, OnBattleDataChanged);
+            AddUIEvent<BattleState>(IBattleEvent_Event.OnBattleDataChanged, OnBattleDataChanged);
 
             AddUIEvent<bool>(IBattlePlayUI_Event.OnSkillCancel,OnSkillCancel);
             AddUIEvent<int, int>(IBattlePlayUI_Event.OnSkillEnterCD, OnSkillEnterCD);
             AddUIEvent(IBattlePlayUI_Event.SetForbidState,SetForbidState);
             RegisterMoveEvents();
 
-            GameEvent.Get<IBattleCmd>().RequestSnapshot();
+            BattleSystem.Instance.RequestSnapshot();
         }
 
         protected override void OnDestroy()
@@ -152,7 +152,7 @@ namespace GameLogic
                 {
                     GameEvent.Get<IBuffEvent>().CheckUIInput(false);
                 }
-                bool isSend=BattleInputSvc.Instance.SendMoveKey(logicDir);
+                bool isSend=BattleSystem.Instance.SendMoveKey(logicDir);
                 if(isSend)_lastStickDir=dir;
             }
             

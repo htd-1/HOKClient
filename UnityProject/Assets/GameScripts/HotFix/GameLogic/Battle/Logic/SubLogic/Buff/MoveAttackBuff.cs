@@ -30,7 +30,7 @@ namespace GameLogic
         public override void LogicInit()
         {
             base.LogicInit();
-            _atkSkillCfg = GameServices.Config.GetSkill(Skill.SkillId);
+            _atkSkillCfg = ConfigService.Instance.GetSkill(Skill.SkillId);
             _selectRange = (PEInt)_atkSkillCfg.TargetCfg.SelectRange;
             _searchDis = (PEInt)_atkSkillCfg.TargetCfg.SearchDis;
             _activeSkill = false;
@@ -51,7 +51,7 @@ namespace GameLogic
 
         private void MoveToTarget()
         {
-            _moveTarget = CalRule.FindMinDisEnemyTarget(Owner, Skill.Cfg.TargetCfg);
+            _moveTarget = CalcRule.FindMinDisEnemyTarget(Owner, Skill.Cfg.TargetCfg);
             if (_moveTarget == null) return;
 
             PEVector3 offsetDir = _moveTarget.LogicPos - Owner.LogicPos;
@@ -61,7 +61,7 @@ namespace GameLogic
             if (sqrDis < (_selectRange + sumRaduis) * (_selectRange + sumRaduis))
             {
                 _activeSkill = true;
-                BattleInputSvc.Instance.SendMoveKey(PEVector3.zero);
+                BattleSystem.Instance.SendMoveKey(PEVector3.zero);
                 UnitState = SubUnitState.End;
             }
             else
@@ -73,12 +73,12 @@ namespace GameLogic
                         //有UI输入中断移动
                         UnitState = SubUnitState.End;
                     }
-                    else BattleInputSvc.Instance.SendMoveKey(offsetDir.normalized);
+                    else BattleSystem.Instance.SendMoveKey(offsetDir.normalized);
                 }
                 else
                 {
                     Log.Info("超出搜索距离");
-                    BattleInputSvc.Instance.SendMoveKey(PEVector3.zero);
+                    BattleSystem.Instance.SendMoveKey(PEVector3.zero);
                     UnitState=SubUnitState.End;
                 }
             }
@@ -90,7 +90,7 @@ namespace GameLogic
             if (_activeSkill)
             {
                 _activeSkill = false;
-                BattleInputSvc.Instance.SendSkillKey(Skill.SkillId);
+                BattleSystem.Instance.SendSkillKey(Skill.SkillId);
             }
             
             _eventMgr.Clear();

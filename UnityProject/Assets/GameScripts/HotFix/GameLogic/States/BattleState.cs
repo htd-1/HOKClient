@@ -5,10 +5,10 @@ namespace GameLogic
 {
     /// <summary>
     /// L5 域状态：战斗（启动数据 + 战斗中数据 + 结算）。由 <see cref="BattleSystem"/> 私有持有。
-    /// <para>纯数据 POCO，不耦合事件总线；变更由 BattleSystem 写入后发 <c>IBattleData.Changed</c>。</para>
+    /// <para>纯数据 POCO，不耦合事件总线；变更由 BattleSystem 写入后发 <c>IBattleEvent.OnBattleDataChanged</c>。</para>
     /// <para>启动数据（MapID/HeroList/SelfIndex）由 BattleSystem 在 <c>OnNtfLoadRes</c> 流入（早于 <c>RspBattleStart</c>，
-    /// 保证 <see cref="ProcedureBattle"/>.OnEnter 初始化 <see cref="FightMgr"/> 时可读，无事件顺序竞争）。</para>
-    /// <para>房间号（MatchRoomID）由 BattleSystem 在 <c>OnNtfConfirm</c> 跨域流入（NtfConfirm.roomID），供 <see cref="BattleInputSvc"/> 战斗中发包。</para>
+    /// 保证 <see cref="BattleSystem"/>.EnterBattle 初始化 <see cref="FightMgr"/> 时可读，无事件顺序竞争）。</para>
+    /// <para>房间号（MatchRoomID）由 BattleSystem 在 <c>OnNtfConfirm</c> 跨域流入（NtfConfirm.roomID），供 <see cref="BattleSystem"/> 战斗中发包。</para>
     /// </summary>
     public sealed class BattleState
     {
@@ -17,7 +17,7 @@ namespace GameLogic
         public List<BattleHeroData> BattleHeroList { get; private set; }
         public int BattleSelfIndex { get; private set; } = -1;
 
-        // === 战斗房间号（NtfConfirm 建立，跨匹配→战斗；BattleInputSvc 发操作包用）===
+        // === 战斗房间号（NtfConfirm 建立，跨匹配→战斗；BattleSystem 发操作包用）===
         public uint MatchRoomID { get; private set; }
 
         // === 战斗中数据（RspBattleStart 起，战斗中持续）===

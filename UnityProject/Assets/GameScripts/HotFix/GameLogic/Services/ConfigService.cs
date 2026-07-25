@@ -16,7 +16,7 @@ namespace GameLogic
     /// 配置服务：通过 Luban 生成的 Tables 提供业务层配置查询。
     /// 对外仍返回业务 DTO（UnitCfg/MapCfg），内部从 Luban Tables 转换。
     /// </summary>
-    public sealed class ConfigService
+    public sealed class ConfigService : Singleton<ConfigService>
     {
         private Tables _tables;
         private readonly List<TextAsset> _loadedAssets = new();
@@ -35,9 +35,9 @@ namespace GameLogic
         }
 
         /// <summary>
-        /// 释放配置缓存并卸载所有已加载的 TextAsset。
+        /// 释放配置缓存并卸载所有已加载的 TextAsset（Singleton 释放时由基类调用）。
         /// </summary>
-        public void Release()
+        protected override void OnRelease()
         {
             var resourceModule = GameModule.Resource;
             foreach (var asset in _loadedAssets)

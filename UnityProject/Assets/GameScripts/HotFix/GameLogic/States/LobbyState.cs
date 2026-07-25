@@ -5,8 +5,8 @@ namespace GameLogic
 {
     /// <summary>
     /// L5 域状态：大厅流程（匹配/确认/选英雄）+ 加载进度 + 战斗启动数据。由 <see cref="LobbySystem"/> 私有持有。
-    /// <para>纯数据 POCO，不耦合事件总线；变更由 LobbySystem 写入后发 <c>ILobbyData.Changed</c>。</para>
-    /// <para>本类为大厅域唯一状态源（由 LobbySystem 私有持有，经 ILobbyData.Changed 推送）。</para>
+    /// <para>纯数据 POCO，不耦合事件总线；变更由 LobbySystem 写入后发 <c>ILobbyEvent.Changed</c>。</para>
+    /// <para>本类为大厅域唯一状态源（由 LobbySystem 私有持有，经 ILobbyEvent.Changed 推送）。</para>
     /// </summary>
     public sealed class LobbyState
     {

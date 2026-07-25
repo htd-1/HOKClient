@@ -157,5 +157,13 @@ namespace GameLogic
                 
             }
         }
+
+        public void SetBuffFollower(BuffView buffView)
+        {
+            // Log.Info("设置成功");
+            buffView.transform.SetParent(transform);
+            buffView.transform.localPosition=Vector3.zero;
+            buffView.transform.localScale=Vector3.one;
+        }
     }
 }

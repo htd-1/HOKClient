@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using GameConfig.hok;
 using PEMath;
 using TEngine;
@@ -32,7 +32,7 @@ namespace GameLogic
         public Skill(int skillID,MainLogicUnit owner)
         {
             SkillId = skillID;
-            Cfg=GameServices.Config.GetSkill(skillID);
+            Cfg=ConfigService.Instance.GetSkill(skillID);
             SpellTime = Cfg.SpellTime;
             SkillTime = Cfg.SkillTime;
             Owner = owner;
@@ -68,7 +68,7 @@ namespace GameLogic
                     Log.Warning($"skillID{Cfg.SkillID}exist buffID==0");
                     continue;
                 }
-                BuffCfg buffCfg =GameServices.Config.GetBuff(buffID);
+                BuffCfg buffCfg =ConfigService.Instance.GetBuff(buffID);
 
                 if (buffCfg.Attacher == AttachType.Target
                     ||buffCfg.Attacher==AttachType.Bullet)
@@ -116,6 +116,7 @@ namespace GameLogic
             if (!string.IsNullOrEmpty(Cfg.AniName))
             {
                 Owner.InputFakeMoveKey(PEVector3.zero);
+                Owner.ClearFreeAniCallBack();
                 Owner.PlayAni(Cfg.AniName);
                 //技能被中断或后摇移动取消需要调用动画重置
                 FreeAniCallback = () =>
@@ -205,7 +206,7 @@ namespace GameLogic
 
             if (Cfg.TargetCfg != null&&Cfg.TargetCfg.TargetTeam!=TargetTeam.Dynamic)
             {
-                LockTarget=CalRule.FindSingleTargetByRule(Owner,Cfg.TargetCfg,skillArgs);
+                LockTarget=CalcRule.FindSingleTargetByRule(Owner,Cfg.TargetCfg,skillArgs);
                 if (LockTarget != null)
                 {
                     PEVector3 spellDir=LockTarget.LogicPos-Owner.LogicPos;
@@ -227,7 +228,7 @@ namespace GameLogic
                     {
                         void DelaySkillWork()
                         {
-                            LockTarget=CalRule.FindSingleTargetByRule(Owner,Cfg.TargetCfg,skillArgs);
+                            LockTarget=CalcRule.FindSingleTargetByRule(Owner,Cfg.TargetCfg,skillArgs);
                             if (LockTarget != null)
                             {
                                 SkillWork();
@@ -293,7 +294,7 @@ namespace GameLogic
                     continue;
                 }
 
-                BuffCfg buffCfg = GameServices.Config.GetBuff(buffID);
+                BuffCfg buffCfg = ConfigService.Instance.GetBuff(buffID);
                 if (buffCfg.Attacher == AttachType.Caster||
                     buffCfg.Attacher==AttachType.Indie)
                 {
@@ -330,7 +331,7 @@ namespace GameLogic
                 TempSkillID= replaceID;
             }
             
-            Cfg=GameServices.Config.GetSkill(replaceID);
+            Cfg=ConfigService.Instance.GetSkill(replaceID);
             SpellTime = Cfg.SpellTime;
             SkillTime = Cfg.SkillTime;
             if (Cfg.IsNormalAttack)

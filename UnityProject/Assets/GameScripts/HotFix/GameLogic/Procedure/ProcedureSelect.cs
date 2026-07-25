@@ -5,7 +5,7 @@ namespace GameLogic
 {
     /// <summary>
     /// 选英雄状态（纯编排）：显示 SelectUI；听 <see cref="ILobbyEvent"/> 驱动流转。
-    /// <para>选英雄发包/倒计时业务已迁 <see cref="LobbySystem"/>（SelectUI 订阅 ILobbyData.Changed 刷新 + 超时自动选）。</para>
+    /// <para>选英雄发包/倒计时业务已迁 <see cref="LobbySystem"/>（SelectUI 订阅 ILobbyEvent.Changed 刷新 + 超时自动选）。</para>
     /// </summary>
     public class ProcedureSelect : ProcedureBase
     {

@@ -45,7 +45,14 @@ public partial class GameApp
             GameModule.Audio.StopAll(false);
         }
 
-        await GameServices.InitializeAsync();
+        // 基础设施启动
+        await ConfigService.Instance.LoadAsync();
+        NetSvc.Instance.Active();
+        GMService.Instance.Active();
+        // 业务系统启动
+        LoginSystem.Instance.Active();
+        LobbySystem.Instance.Active();
+        BattleSystem.Instance.Active();
 
         var fsm = GameModule.Fsm.CreateFsm("GameFlow", GameModule.Procedure,
             new ProcedureLogin(),
@@ -62,7 +69,11 @@ public partial class GameApp
 
     private static void Release()
     {
-        GameServices.Release();
+        if (NetSvc.IsValid) NetSvc.Instance.Release();
+        if (ConfigService.IsValid) ConfigService.Instance.Release();
+        if (BattleSystem.IsValid) BattleSystem.Instance.Release();
+        if (LobbySystem.IsValid) LobbySystem.Instance.Release();
+        if (LoginSystem.IsValid) LoginSystem.Instance.Release();
         SingletonSystem.Release();
         Log.Warning("======= Release GameApp =======");
     }

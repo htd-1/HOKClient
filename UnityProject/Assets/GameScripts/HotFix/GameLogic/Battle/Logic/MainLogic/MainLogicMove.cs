@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using HOKProtocol;
 using PEMath;
 using PEPhysx;
@@ -41,7 +41,7 @@ namespace GameLogic
         {
             PEVector3 moveDir =InputDir;
             Collider.mPos += moveDir * LogicMoveSpeed * 
-                             GameServices.Config.GetClientFrameTime();
+                             ConfigService.Instance.GetClientFrameTime();
             PEVector3 adj = PEVector3.zero;
             Collider.CalcCollidersInteraction(_envColliderList,ref moveDir, ref adj);
             if (LogicDir != moveDir)

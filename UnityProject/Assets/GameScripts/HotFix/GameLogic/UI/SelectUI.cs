@@ -35,12 +35,12 @@ namespace GameLogic
 
 			// 推送式：订阅大厅流程数据（倒计时/超时）+ 玩家数据（英雄列表输入），拉首次快照
 			_lobbyDataMgr = new GameEventMgr();
-			_lobbyDataMgr.AddEvent<LobbyState>(ILobbyData_Event.Changed, OnLobbyDataChanged);
+			_lobbyDataMgr.AddEvent<LobbyState>(ILobbyEvent_Event.Changed, OnLobbyDataChanged);
 			_playerDataMgr = new GameEventMgr();
-			_playerDataMgr.AddEvent<UserData>(IPlayerData_Event.Changed, OnPlayerDataChanged);
+			_playerDataMgr.AddEvent<UserData>(IPlayerEvent_Event.Changed, OnPlayerDataChanged);
 
-			GameEvent.Get<IPlayerCmd>().RequestSnapshot();
-			GameEvent.Get<ILobbyCmd>().RequestSnapshot();
+			LoginSystem.Instance.RequestSnapshot();
+			LobbySystem.Instance.RequestSnapshot();
 		}
 
 		protected override void OnDestroy()
@@ -75,12 +75,12 @@ namespace GameLogic
 			if (_userData == null) return;
 			if (_heroSelectList != null) return;
 
-			_heroSelectList = GameServices.Config.GetHeroList(_userData);
+			_heroSelectList = ConfigService.Instance.GetHeroList(_userData);
 			CreateHeroItems();
 
 			if (_heroItems.Count > 0)
 			{
-				OnHeroSelected(_heroSelectList[0].heroID, GameServices.Config.GetHeroResName(_heroSelectList[0].heroID));
+				OnHeroSelected(_heroSelectList[0].heroID, ConfigService.Instance.GetHeroResName(_heroSelectList[0].heroID));
 			}
 		}
 
@@ -140,8 +140,8 @@ namespace GameLogic
 			_isSelect = true;
 			m_btn_confirm.interactable = false;
 
-			// ①命令：发 ILobbyCmd.SndSelect（LobbySystem 监听后发包 + 停倒计时）
-			GameEvent.Get<ILobbyCmd>().SndSelect(_selectedHeroId);
+			// 上行直调 LobbySystem（发包 + 停倒计时）
+			LobbySystem.Instance.SndSelect(_selectedHeroId);
 		}
 
 		private void RefreshCountDown()

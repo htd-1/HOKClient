@@ -5,7 +5,7 @@ namespace GameLogic
 {
     /// <summary>
     /// 加载状态（纯编排）：显示 LoadUI + 加载战斗场景；听 <see cref="IBattleEvent"/> 驱动流转到战斗。
-    /// <para>加载进度刷新业务已迁 <see cref="LobbySystem"/>（LoadUI 订阅 ILobbyData.Changed 自动刷新）。</para>
+    /// <para>加载进度刷新业务已迁 <see cref="LobbySystem"/>（LoadUI 订阅 ILobbyEvent.Changed 自动刷新）。</para>
     /// <para>BattleMapID 读 <see cref="BattleSystem"/>（BattleState，OnNtfLoadRes 流入，OnEnter 时已就绪）。</para>
     /// </summary>
     public class ProcedureLoad : ProcedureBase
@@ -47,7 +47,7 @@ namespace GameLogic
             // （修复卡 Load：原版 BattleSys.SceneLoadProgress/SceneLoadDone 的两个发包在重构中丢失，服务器收不到 ReqBattleStart 故不发 RspBattleStart）
             GameModule.Scene.LoadScene(
                 "map_" + BattleSystem.Instance.BattleMapID,
-                callBack: _ => GameEvent.Get<ILobbyCmd>().LoadComplete(),
+                callBack: _ => LobbySystem.Instance.LoadComplete(),
                 progressCallBack: OnSceneProgress);
         }
 
@@ -56,7 +56,7 @@ namespace GameLogic
             int percent = (int)(p * 100);
             if (percent == _lastLoadPercent) return;
             _lastLoadPercent = percent;
-            GameEvent.Get<ILobbyCmd>().ReportLoadProgress(percent);
+            LobbySystem.Instance.ReportLoadProgress(percent);
         }
 
         protected override void OnLeave(IFsm<IProcedureModule> procedureOwner, bool isShutdown)
