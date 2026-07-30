@@ -47,7 +47,7 @@ namespace GameLogic
                         new BattleHeroData { heroID = 101, userName = "hdt5" },
                         new BattleHeroData { heroID = 102, userName = "hdt6" },
                     },
-                    posIndex=0
+                    posIndex=1
                 }
             };
             
