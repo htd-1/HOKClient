@@ -45,6 +45,8 @@ namespace GameLogic
             AddUIEvent<bool>(IBattlePlayUI_Event.OnSkillCancel,OnSkillCancel);
             AddUIEvent<int, int>(IBattlePlayUI_Event.OnSkillEnterCD, OnSkillEnterCD);
             AddUIEvent(IBattlePlayUI_Event.SetForbidState,SetForbidState);
+            
+            AddUIEvent<int>(IBattlePlayUI_Event.SetImgInfo,SetImgInfo);
             RegisterMoveEvents();
 
             BattleSystem.Instance.RequestSnapshot();
@@ -129,6 +131,7 @@ namespace GameLogic
             }
 
             UpdateSkill();
+            UpdateImgInfo(GameTime.deltaTime);
         }
 
 

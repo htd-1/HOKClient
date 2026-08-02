@@ -96,6 +96,7 @@ namespace GameLogic
             _timeList.Add(timer);
         }
 
+        
         public Buff CreateSkillBuff(MainLogicUnit source, Skill skill, int buffID, object[] args = null)
         {
             Buff buff=BuffRegistry.Create(ConfigService.Instance.GetBuff(buffID),source,this,skill,buffID, args);
@@ -103,6 +104,15 @@ namespace GameLogic
             _buffList.Add(buff);
             
             return buff;
+        }
+
+        public Bullet CreateSkillBullet(MainLogicUnit source,MainLogicUnit target, Skill skill)
+        {
+            Bullet bullet = BulletRegistry.Create(skill.Cfg.BulletCfg,source, target, skill);
+            
+            bullet.LogicInit();
+            BattleSystem.Instance.AddBullet(bullet);
+            return bullet;
         }
         public Skill GetNormalSkill()
         {
@@ -113,6 +123,10 @@ namespace GameLogic
             return null;
         }
 
+        public Skill[] GetAllSkill()
+        {
+            return SkillArr;
+        }
         public Skill GetSkillByID(int skillID)
         {
             for (int i = 0; i < SkillArr.Length; i++)

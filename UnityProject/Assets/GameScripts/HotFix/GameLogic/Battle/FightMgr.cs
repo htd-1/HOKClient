@@ -18,8 +18,11 @@ namespace GameLogic
         /// 英雄角色集合
         /// </summary>
         private List<Hero> _heroList;
+        private List<Bullet> _bulletList;
         private int _selfIndex = -1;
         private Hero _selfHero;
+        
+        
         /// <summary>当前客户端操作英雄在 _heroList 中的下标(来自 NtfLoadRes.posIndex)。</summary>
         public int SelfIndex => _selfIndex;
         /// <summary>当前客户端操作英雄引用(Init 时按下标解析,供战斗逻辑层/表现层使用)。</summary>
@@ -36,12 +39,16 @@ namespace GameLogic
         }
         public void Init()
         {
+            //初始化随机数
+            RandomUtils.InitRandom(666);
             _heroList=new List<Hero>();
+            _bulletList=new List<Bullet>();
             //初始化
 
             // 注册 Buff 工厂,须在创建任何 MainLogicUnit(InitHero→LogicInit→技能/buff)之前
             BuffRegistry.Init();
-
+            BulletRegistry.Init();
+            
             InitEnv();
 
             // 启动数据走 instance 直读（BattleSystem 持 BattleState、ConfigService 出地图配置），
@@ -125,10 +132,24 @@ namespace GameLogic
         public void UnInit()
         {
             _heroList.Clear();
+            _bulletList.Clear();
         }
 
         public void Tick()
         {
+            //bullet
+            for (int i = _bulletList.Count - 1; i >= 0; i--)
+            {
+                if (_bulletList[i].UnitState == SubUnitState.None)
+                {
+                    _bulletList[i].LogicUnInit();
+                    _bulletList.RemoveAt(i);
+                }
+                else
+                {
+                    _bulletList[i].LogicTick();
+                }
+            }
             //Hero
             for (int i = 0; i < _heroList.Count; i++)
             {
@@ -199,6 +220,10 @@ namespace GameLogic
             return env;
         }
 
+        public void AddBullet(Bullet bullet)
+        {
+            _bulletList.Add(bullet);
+        }
         public void InputKey(List<OpKey> keyList)
         {
             for (int i = 0; i < keyList.Count; i++)

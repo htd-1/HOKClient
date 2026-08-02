@@ -2749,7 +2749,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
-  m_FillAmount: 0.885
+  m_FillAmount: 0.71
   m_FillClockwise: 0
   m_FillOrigin: 2
   m_UseSpriteMesh: 0

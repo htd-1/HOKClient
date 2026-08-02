@@ -17,6 +17,7 @@ namespace GameLogic
         {
             base.OnEnter(procedureOwner);
             GameModule.UI.ShowUI<StartUI>();
+            
         }
 
         private void RegisterEvents()

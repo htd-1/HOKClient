@@ -6,17 +6,6 @@ using UnityEngine;
 
 namespace GameLogic
 {
-    /// <summary>
-    /// L3 Battle 域业务系统：收编 FightMgr（创建/帧驱动）+ 战斗输入（采集/校验/发包，并入自 BattleInputSvc）。
-    /// <para>战斗原始包（RspBattleStart/NtfOpKey/NtfChat/RspBattleEnd）由 <see cref="NetSvc.HandoutMsg"/> 直调本系统 public 方法（不再经 GameEvent 路由）；
-    /// 处理后写 <see cref="BattleState"/> + 发 <see cref="IBattleEvent"/>.OnBattleDataChanged（下行）。
-    /// 多消费者包（RspBattleStart/RspBattleEnd）重广播 <c>IBattleEvent.OnXxx</c> 供 Procedure(FSM)响应流转。</para>
-    /// <para>NtfOpKey 处理后直接驱动 <see cref="FightMgr"/>.InputKey+Tick（不再经事件绕 <see cref="ProcedureBattle"/>）。</para>
-    /// <para><see cref="ProcedureBattle"/> 仅做 FSM 编排：OnEnter→<see cref="EnterBattle"/>、OnUpdate→<see cref="Tick"/>、OnLeave→<see cref="ExitBattle"/>。</para>
-    /// <para>跨域接缝（Lobby→Battle）：监听 <c>ILobbyEvent.OnNtfConfirm</c>/<c>OnNtfLoadRes</c>（由 LobbySystem 重广播）流入 roomID/启动数据，
-    /// 均早于 <c>RspBattleStart</c>，保证 <see cref="EnterBattle"/> 与发包时已就绪。</para>
-    /// <para><see cref="BattleState"/> 为本域唯一状态源。</para>
-    /// </summary>
     public sealed class BattleSystem : Singleton<BattleSystem>
     {
         private readonly BattleState _state = new BattleState();
@@ -149,6 +138,10 @@ namespace GameLogic
         public bool IsActive => _inputActive;
         private uint KeyID => ++_keyID;
 
+        public void AddBullet(Bullet bullet)
+        {
+            _fightMgr.AddBullet(bullet);
+        }
         /// <summary>发送移动帧操作到服务器。</summary>
         public bool SendMoveKey(PEVector3 logicDir)
         {

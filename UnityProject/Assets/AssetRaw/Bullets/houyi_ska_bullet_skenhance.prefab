@@ -10041,6 +10041,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2359198176235965265}
+  - component: {fileID: -7461736967742528206}
   m_Layer: 8
   m_Name: houyi_ska_bullet_skenhance
   m_TagString: Untagged
@@ -10065,6 +10066,28 @@ Transform:
   - {fileID: 4068564974054378668}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-7461736967742528206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4085507725322606878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8f99c9b175c4a8ba0b4f6d622530c9f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  IsSyncPos: 1
+  PredictPos: 1
+  PredictMaxCount: 15
+  SmoothPos: 1
+  ViewPosAccer: 10
+  IsSyncDir: 1
+  SmoothDir: 1
+  AngleMultiplier: 10
+  ViewDirAccer: 7
+  RoationRoot: {fileID: 0}
 --- !u!1 &6980420762278319150
 GameObject:
   m_ObjectHideFlags: 0

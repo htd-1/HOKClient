@@ -2,6 +2,7 @@ using System;
 using GameConfig.hok;
 using PEMath;
 using TEngine;
+using UnityEngine;
 
 namespace GameLogic
 {
@@ -85,7 +86,8 @@ namespace GameLogic
         {
             if (Cfg.BulletCfg != null)
             {
-                //todo
+                TargetBullet bullet = Owner.CreateSkillBullet(Owner, LockTarget, this) as TargetBullet;
+                bullet.HitTargetCB += HitTarget;
             }
             else
             {
@@ -181,7 +183,7 @@ namespace GameLogic
                         {
                             mf.UnitState = SubUnitState.End;
                         }
-                        Log.Info("技能释放没有成功");
+                        // Log.Info("技能释放没有成功");
                         Owner.CreateSkillBuff(Owner, this, ClientConfig.CommonMoveAttackBuffID);
                     }
                 }

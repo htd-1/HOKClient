@@ -18,5 +18,7 @@ namespace GameLogic
         void OnSkillEnterCD(int skillID, int cdTime);
 
         void SetForbidState();
+
+        void SetImgInfo(int cdTime);
     }
 }

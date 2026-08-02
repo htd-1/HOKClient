@@ -68,6 +68,7 @@ namespace GameLogic
         protected override void Start()
         {
             GameObject go = GameModule.Resource.LoadGameObject(Cfg.ResPath);
+            Log.Warning($"[Bullet] UnitName={UnitName} ResPath={Cfg.ResPath} go={(go == null ? "NULL" : go.name)}");
 
             go.name = Source.UnitName + "_" + Cfg.BulletName;
             

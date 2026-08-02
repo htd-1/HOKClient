@@ -149,7 +149,7 @@ namespace GameLogic
                     PlayAni("death");
                     Log.Info($"{UnitName} hp=0,Died");
                 }
-                Log.Info($"{UnitName} hp={Hp.RawInt}");
+                // Log.Info($"{UnitName} hp={Hp.RawInt}");
 
                 JumpUpdateInfo jui=null;
                 if (IsPlayerSelf()||skill.Owner.IsPlayerSelf())
@@ -251,6 +251,11 @@ namespace GameLogic
                 }
                 OnSlowDown?.Invoke(jui);
             }
+        }
+
+        public void ModifyAttackSpeed(PEInt value)
+        {
+            AttackSpeedRate+=value;            
         }
         
         #endregion

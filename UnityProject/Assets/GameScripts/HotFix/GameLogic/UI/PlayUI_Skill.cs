@@ -1,4 +1,6 @@
 using HOKProtocol;
+using TEngine;
+using UnityEngine.UI;
 
 namespace GameLogic
 {
@@ -9,6 +11,8 @@ namespace GameLogic
         private SkillItem _sk2Item;
         private SkillItem _sk3Item;
         private bool _isForbidReleaseSkill;
+
+        private Image _imgInfoCD;
         private void InitSkillInfo()
         {
             BattleHeroData self = _battleState.BattleHeroList[_battleState.BattleSelfIndex];
@@ -26,6 +30,8 @@ namespace GameLogic
             _sk3Item.Init(ConfigService.Instance.GetSkill(skillArr[3]),3);
             SetForbidState(false);
             m_rect_skillInfo.gameObject.SetActive(false);
+            _imgInfoCD = m_rect_skillInfo.Find("cdimg").GetComponent<Image>();
+            if(_imgInfoCD==null)Log.Error("Can not find cdimg");
         }
 
         private void SetForbidState(bool state)
@@ -41,6 +47,14 @@ namespace GameLogic
             _isForbidReleaseSkill = true;
         }
 
+        private void SetImgInfo(int cdTime)
+        {
+            m_rect_skillInfo.gameObject.SetActive(true);
+            
+            _showImgInfo=true;
+            _showTimeCounter = 0;
+            _showTime = cdTime * 1.0f / 1000;
+        }
         private void UpdateSkill()
         {
             if (_isForbidReleaseSkill)
@@ -61,6 +75,28 @@ namespace GameLogic
             if (_sk1Item != null && _sk1Item.CheckSkillID(skillID)) { _sk1Item.EnterCDState(cdTime); return; }
             if (_sk2Item != null && _sk2Item.CheckSkillID(skillID)) { _sk2Item.EnterCDState(cdTime); return; }
             if (_sk3Item != null && _sk3Item.CheckSkillID(skillID)) { _sk3Item.EnterCDState(cdTime); return; }
+        }
+
+        private bool _showImgInfo;
+        private float _showTimeCounter;
+        private float _showTime;
+        
+        private void UpdateImgInfo(float delta)
+        {
+            if (_showImgInfo)
+            {
+                _showTimeCounter+=delta;
+                if (_showTimeCounter >= _showTime)
+                {
+                    _showTimeCounter = 0;
+                    _imgInfoCD.gameObject.SetActive(false);
+                    _showImgInfo = false;
+                }
+                else
+                {
+                    _imgInfoCD.fillAmount = 1-(_showTimeCounter/_showTime);
+                }
+            }
         }
     }
 }
