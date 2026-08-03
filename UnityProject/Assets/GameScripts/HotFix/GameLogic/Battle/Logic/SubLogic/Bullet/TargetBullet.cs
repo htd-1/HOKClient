@@ -46,16 +46,16 @@ namespace GameLogic
         {
             base.Start();
 
-            #region DEBUG显示
-
-            _ghostRoot = new GameObject
-            {
-                  name="弹道GhostRoot"
-            };
-            _ghostRoot.transform.localPosition=Vector3.zero;
-            UnityEngine.Object.Destroy(_ghostRoot,5);
-
-            #endregion
+            // #region DEBUG显示
+            //
+            // _ghostRoot = new GameObject
+            // {
+            //       name="弹道GhostRoot"
+            // };
+            // _ghostRoot.transform.localPosition=Vector3.zero;
+            // UnityEngine.Object.Destroy(_ghostRoot,5);
+            //
+            // #endregion
         }
 
         protected override void Tick()
@@ -104,23 +104,23 @@ namespace GameLogic
             
             LastPos =LogicPos ;
 
-            #region 弹道显示
-
-            GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            
-            go.transform.SetParent(_ghostRoot.transform);
-            _tickCount += 1;
-            go.name = "ghost_"+_tickCount;
-            go.GetComponent<MeshRenderer>().enabled = false;
-            go.transform.position = volumeCfg.mPos.ConvertViewVector3();
-            
-            go.transform.right=volumeCfg.mAxis[0].ConvertViewVector3();
-            go.transform.up=volumeCfg.mAxis[1].ConvertViewVector3();
-            go.transform.forward=volumeCfg.mAxis[2].ConvertViewVector3();
-            go.transform.localScale = volumeCfg.mSize.ConvertViewVector3() * 2;
-            
-
-            #endregion
+            // #region 弹道显示
+            //
+            // GameObject go = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            //
+            // go.transform.SetParent(_ghostRoot.transform);
+            // _tickCount += 1;
+            // go.name = "ghost_"+_tickCount;
+            // go.GetComponent<MeshRenderer>().enabled = false;
+            // go.transform.position = volumeCfg.mPos.ConvertViewVector3();
+            //
+            // go.transform.right=volumeCfg.mAxis[0].ConvertViewVector3();
+            // go.transform.up=volumeCfg.mAxis[1].ConvertViewVector3();
+            // go.transform.forward=volumeCfg.mAxis[2].ConvertViewVector3();
+            // go.transform.localScale = volumeCfg.mSize.ConvertViewVector3() * 2;
+            //
+            //
+            // #endregion
             
             PEVector3 normal = PEVector3.zero;
             PEVector3 adj=PEVector3.zero;

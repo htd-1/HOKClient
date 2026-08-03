@@ -17,7 +17,10 @@ namespace GameLogic
         {
             Reg(BulletType.SkillTarget,(source,target,skill)
                 =>new TargetBullet(source,target,skill));
-            
+            Reg(BulletType.UIDirection,(source,target,skill)
+                =>new DirectBullet(source,skill));
+            Reg(BulletType.UIPosition,(source,target,skill)
+                =>new DirectBullet(source,skill)); 
         }
         
         

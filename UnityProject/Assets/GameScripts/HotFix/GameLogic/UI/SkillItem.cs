@@ -161,7 +161,7 @@ namespace GameLogic
 						dirVector3 = Quaternion.Euler(0, 45, 0) * dirVector3;
 						
 						_viewHero.DisableSkillGuide(skillindex);
-						ClickSkillItem(dirVector3);
+						ClickSkillItem(dirVector3.normalized);
 					}
 					else
 					{

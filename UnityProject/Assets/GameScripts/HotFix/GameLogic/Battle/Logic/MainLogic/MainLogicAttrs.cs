@@ -234,9 +234,9 @@ namespace GameLogic
         }
         public void ModifyMoveSpeed(PEInt value, Buff buff, bool jumpInfo)
         {
-            Log.Info($"移动offset{value.ScaledValue}");
+            // Log.Info($"移动offset{value.ScaledValue}");
             LogicMoveSpeed += value;
-            Log.Info($"当前速度{LogicMoveSpeed}");
+            // Log.Info($"当前速度{LogicMoveSpeed}");
             if (value < 0 && jumpInfo)
             {
                 //减速

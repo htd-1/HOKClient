@@ -223,6 +223,26 @@ namespace GameLogic
             if (len < range) return target;
             return null;
         }
+
+        public static MainLogicUnit FindMinDisTargetInPos(PEVector3 pos ,List<MainLogicUnit>targetTeam)
+        {
+            if(targetTeam==null)return null;
+            MainLogicUnit target = null;
+            int count=targetTeam.Count;
+            PEInt len = 0;
+            for (int i = 0; i < count; i++)
+            {
+                PEInt r=targetTeam[i].UnitData.UnitCfg.ColliderCfg.mRadius;
+                PEInt tempLen=(targetTeam[i].LogicPos - pos).magnitude-r;
+                if (len==0||tempLen < len)
+                {
+                    len=tempLen;
+                    target = targetTeam[i];
+                }
+            }
+            
+            return target;
+        }
         private static List<MainLogicUnit> GetTargetTeam(MainLogicUnit self, TargetCfg cfg)
         {
             List<MainLogicUnit> targetList = new List<MainLogicUnit>();

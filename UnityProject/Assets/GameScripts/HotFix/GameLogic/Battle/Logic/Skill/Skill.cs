@@ -257,8 +257,16 @@ namespace GameLogic
                 
                 void DirectionBullet()
                 {
-                    //非目标弹道技能
-                    //todo
+                    DirectBullet bullet=Owner.CreateSkillBullet(Owner,null,this)as DirectBullet;
+                    bullet.HitTargetCB += ((unit, objects) =>
+                    {
+                        unit.GetDamageBySKill(Cfg.Damage,this);
+                        HitTarget(unit,objects);
+                    });
+                    bullet.ReachPosCB = () =>
+                    {
+                        Log.Info("子弹抵达终点");
+                    };
                 }
                 if (SpellTime == 0)
                 {
